@@ -6,23 +6,20 @@
 
 void Player::Init()
 {
-    float playeRadius = 20;
-    player.setRadius(playeRadius);
-    sf::Vector2f centerPos = {Window::width / 2.0f, Window::height / 2.0f};
-    player.setOrigin(playeRadius, playeRadius);
-    player.setPosition(centerPos);
-    player.setFillColor({192,192,192});
-    player.setOutlineThickness(1.0f);
-    player.setOutlineColor(sf::Color::Black);
+    float radius = 20;
+    glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
+
+    player.Init(centerPos, {}, radius, radius);
+    player.circle.setFillColor({192,192,192});
 
     sf::Vector2f playerCenter;
-    playerCenter.x = centerPos.x + player.getRadius();
-    playerCenter.y = centerPos.y + player.getRadius();
+    playerCenter.x = centerPos.x + radius;
+    playerCenter.y = centerPos.y + radius;
 
     sf::Vector2f barrelSize = {7, 30};
     barrel.setSize(barrelSize);
     barrel.setOrigin(barrelSize.x / 2, barrelSize.y);
-    barrel.setPosition(centerPos);
+    barrel.setPosition(centerPos.x, centerPos.y);
     barrel.setFillColor({192,192,192});
     barrel.setOutlineThickness(1.0f);
     barrel.setOutlineColor(sf::Color::Black);
@@ -35,37 +32,35 @@ void Player::Init()
 
 void Player::Update()
 {
-    auto velocity = Move();
-    auto nextMove = player.getPosition() + velocity;
-    float radius = player.getRadius();
-
-    if(nextMove.x + radius >= Window::width) { nextMove.x = int(Window::width - radius); }
-    if(nextMove.x <= radius) { nextMove.x = radius; }
-    if(nextMove.y + radius >= Window::height) { nextMove.y = int(Window::height - radius);}
-    if(nextMove.y <= radius) { nextMove.y = radius; }
-
-    player.setPosition(nextMove);
-    barrel.setPosition(nextMove);
+    player.velocity = Move();
     direction = Direction::None;
+
+    player.Update();
+    barrel.setPosition(player.position.x, player.position.y);
 }
 
 void Player::Draw(sf::RenderWindow &window)
 {
     mousePos = sf::Mouse::getPosition(window);
     LookAtMousePos();
-    window.draw(player);
+    player.Draw(window);
     window.draw(barrel);
 }
 
-sf::Vector2f Player::Move()
+glm::vec2 Player::Move()
 {
     //TODO - Fix diagonal speed
-    sf::Vector2f returnValue = {0.0f, 0.0f};
+    glm::vec2 returnValue = {0.0f, 0.0f};
     if( Direction::Up == (direction & Direction::Up)){ returnValue.y -= speed; }
     if ( Direction::Right == (direction & Direction::Right)){ returnValue.x += speed; }
     if ( Direction::Left == (direction & Direction::Left)){ returnValue.x -= speed; }
-    if ( Direction::Down== (direction & Direction::Down)){ returnValue.y += speed; }
+    if ( Direction::Down == (direction & Direction::Down)){ returnValue.y += speed; }
     return returnValue;
+}
+
+Ball &Player::GetPlayer()
+{
+    return player;
 }
 
 void Player::LookAtMousePos()

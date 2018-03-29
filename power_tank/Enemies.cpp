@@ -15,73 +15,46 @@ void Enemies::Init()
 
 void Enemies::Update()
 {
-    static int counterTimer = 0;
-    counterTimer++;
-    if(counterTimer > 200)
+//    static int counterTimer = 0;
+//    counterTimer++;
+//    if(counterTimer > 200)
+//    {
+//        SpawnEnemy();
+//        counterTimer = 0;
+//    }
+
+    for(auto& b : m_enemies)
     {
-        SpawnEnemy();
-        counterTimer = 0;
+        b.Update();
     }
 
-    for(size_t i = 0; i < m_enemies.size(); i++)
+    for(auto& b1 : m_enemies)
     {
-        for(size_t j = (i+1); j < m_enemies.size(); j++)
+        for(auto& b2 : m_enemies)
         {
-            auto& lhsVel = m_enemies[i].velocity;
-            auto& lhsShape = m_enemies[i].shape;
+            if( b1.id == b2.id )
+            {
+                continue;
+            }
 
-            auto& rhsVel = m_enemies[j].velocity;
-            auto& rhsShape = m_enemies[j].shape;
-        }
-    }
-
-    for(auto& c : m_enemies)
-    {
-        if( false == c.inWindow )
-        {
-            c.shape.move(c.velocity);
-            const auto& pos = c.shape.getPosition();
-            if( pos.x > c.radius &&
-                pos.x + c.radius < Window::width &&
-                pos.y > c.radius &&
-                pos.y + c.radius < Window::height)
+            if( b1.IsCollide(b2) )
             {
-                c.inWindow = true;
+                b1.ResolveCollision(b2);
             }
-        }
-        else
-        {
-            auto nextMove = c.shape.getPosition() + c.velocity;
-            if(nextMove.x + c.radius >= Window::width)
-            {
-                nextMove.x = int(Window::width - c.radius);
-                c.velocity.x = -(c.velocity.x);
-            }
-            if(nextMove.x <= c.radius)
-            {
-                nextMove.x = c.radius;
-                c.velocity.x = -(c.velocity.x);
-            }
-            if(nextMove.y + c.radius >= Window::height)
-            {
-                nextMove.y = int(Window::height - c.radius);
-                c.velocity.y = -(c.velocity.y);
-            }
-            if(nextMove.y <= c.radius)
-            {
-                nextMove.y = c.radius;
-                c.velocity.y = -(c.velocity.y);
-            }
-            c.shape.setPosition(nextMove);
         }
     }
 }
 
+std::vector<Ball> &Enemies::GetEnemies()
+{
+    return m_enemies;
+}
+
 void Enemies::Draw(sf::RenderWindow &window)
 {
-    for(const auto& c : m_enemies)
+    for(auto& b : m_enemies)
     {
-        window.draw(c.shape);
+        b.Draw(window);
     }
 }
 
@@ -92,7 +65,7 @@ void Enemies::SpawnEnemy()
     using Random = std::uniform_real_distribution<float>;
     int placeSide = std::uniform_int_distribution<int>(1, 3)(rng);
 
-    sf::Vector2f pos;
+    glm::vec2 pos;
     switch( placeSide )
     {
         case 1: //Left Side
@@ -112,17 +85,15 @@ void Enemies::SpawnEnemy()
         }break;
     }
 
-    float speed = Random(1.5f, 2.7f)(rng);
-    sf::Vector2f centerPos = {Window::width / 2.0f, Window::height / 2.0f};
-    sf::Vector2f disp = centerPos - pos;
+    float speed = Random(0.85f, 4.7f)(rng);
+    glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
+    glm::vec2 disp = centerPos - pos;
     float distance = std::hypot(disp.x, disp.y);
-    sf::Vector2f velocity = disp * (speed / distance);
+    glm::vec2 velocity = disp * (speed / distance);
 
-    Enemy enemy;
-    enemy.radius = Random(10.0f, 15.0f)(rng);
-    enemy.velocity = velocity;
-    enemy.shape.setPosition(pos);
-    enemy.shape.setOrigin(enemy.radius, enemy.radius);
-    m_enemies.push_back(enemy);
+    float radius = Random(10.0f, 15.0f)(rng);
+
+    Ball ball(pos, velocity, radius, radius);
+    m_enemies.push_back(ball);
 }
 

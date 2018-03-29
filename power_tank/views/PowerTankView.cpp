@@ -28,6 +28,17 @@ void PowerTankView::Update()
 {
     m_enemies.Update();
     m_player.Update();
+
+    auto& player = m_player.GetPlayer();
+    auto& enemies = m_enemies.GetEnemies();
+
+    for(auto& enemy : enemies)
+    {
+        if( player.IsCollide(enemy) )
+        {
+            player.ResolveCollision(enemy);
+        }
+    }
 }
 
 void PowerTankView::Draw(sf::RenderWindow &window)
