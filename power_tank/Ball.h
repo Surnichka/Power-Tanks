@@ -27,10 +27,13 @@ public:
 
     void OnCollideOtherBall(OnCollisionFunc onColFunc);
     void OnWallCollide(OnWallHitFunc onWallHitFunc);
+
+    void SetMaxHealth(int health);
 public:
     OnWallHitFunc m_onWallHit;
     OnCollisionFunc m_onCollision;
-    int m_health = 1;
+    int m_maxHealth = 1;
+    int m_currentHealth = 1;
     bool m_enteringScreen = true;
     size_t m_id = 0;
     glm::vec2 m_position;

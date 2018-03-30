@@ -36,12 +36,12 @@ void Ball::Init(glm::vec2 pos, glm::vec2 vel, float r, float m)
 
 void Ball::Destroy()
 {
-    m_health = 0;
+    m_currentHealth = 0;
 }
 
 void Ball::TakeLife(int damage)
 {
-    m_health = std::max(0, m_health - damage);
+    m_currentHealth = std::max(0, m_currentHealth - damage);
 }
 
 void Ball::Update(float dt)
@@ -137,12 +137,18 @@ void Ball::ResolveCollision(Ball &other)
 
 bool Ball::IsAlive() const
 {
-    return m_health != 0;
+    return m_currentHealth != 0;
 }
 
 void Ball::OnWallCollide(Ball::OnWallHitFunc onWallHitFunc)
 {
     m_onWallHit = onWallHitFunc;
+}
+
+void Ball::SetMaxHealth(int health)
+{
+    m_maxHealth = health;
+    m_currentHealth = health;
 }
 
 void Ball::OnCollideOtherBall(Ball::OnCollisionFunc onColFunc)

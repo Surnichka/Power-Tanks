@@ -11,6 +11,7 @@ public:
     std::vector<Ball>& GetEnemies();
     void Draw(sf::RenderWindow& window);
 private:
+    static const int max_enemies = 20;
     void SpawnEnemy();
     std::vector<Ball> m_enemies;
 };

@@ -28,6 +28,7 @@ int main()
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetSignals().Dispatch("player_move_up"); }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetSignals().Dispatch("player_move_down"); }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) { GetSignals().Dispatch("player_shoot"); }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){ GetSignals().Dispatch("player_shoot_supernova"); }
 
         //Update metods
         gameApp.Update(20.0f);

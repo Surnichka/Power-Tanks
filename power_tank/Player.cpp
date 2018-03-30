@@ -6,14 +6,12 @@
 
 void Player::Init()
 {
-    gun.Init(500.0f, 1);
-
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
     player.Init(centerPos, {}, radius, radius);
     player.m_circle.setFillColor({192,192,192});
-    player.m_health = 10;
+    player.SetMaxHealth(10);
     player.OnCollideOtherBall([](Ball& self, Ball& other)
     {
         other.Destroy();
@@ -45,6 +43,11 @@ void Player::Init()
         glm::vec2 srcPos = {barrel.getPosition().x,barrel.getPosition().y};
         glm::vec2 dstPos = {mousePos.x, mousePos.y};
         gun.Shoot(srcPos, dstPos);
+    });
+    GetSignals().ConnectSlot("player_shoot_supernova", [this]()
+    {
+        glm::vec2 srcPos = {barrel.getPosition().x,barrel.getPosition().y};
+        gun.Ultimate(srcPos);
     });
 }
 

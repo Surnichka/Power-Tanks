@@ -22,7 +22,10 @@ void Enemies::Update(float dt)
     counterTimer++;
     if(counterTimer > 100)
     {
-        SpawnEnemy();
+        if( m_enemies.size() < max_enemies )
+        {
+            SpawnEnemy();
+        }
         counterTimer = 0;
     }
 
@@ -88,16 +91,16 @@ void Enemies::SpawnEnemy()
         }break;
     }
 
-    float speed = Random(5.f, 5.f)(rng);
+    float speed = Random(3.0f, 6.0f)(rng);
     glm::vec2 centerPos = {Window::Playable::width / 2.0f, Window::Playable::height / 2.0f};
     glm::vec2 disp = centerPos - pos;
     float distance = std::hypot(disp.x, disp.y);
     glm::vec2 velocity = disp * (speed / distance);
 
-    float radius = Random(10.0f, 15.0f)(rng);
+    float radius = Random(15.0f, 30.0f)(rng);
 
     Ball ball(pos, velocity, radius, radius * 10.0f);
-    ball.m_health = 5;
+    ball.SetMaxHealth(int(radius / 3.0f));
 
     m_enemies.push_back(ball);
 }
