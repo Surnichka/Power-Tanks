@@ -27,6 +27,7 @@ int main()
               event.mouseButton.button == sf::Mouse::Button::Left)
             {
                 GetSignals().Dispatch("SpawnEnemy");
+                GetSignals().Dispatch("player_shoot");
             }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetSignals().Dispatch("player_move_left"); }

@@ -9,13 +9,13 @@ public:
     Ball() = default;
     Ball(glm::vec2 pos, glm::vec2 vel, float r, float m);
     void Init(glm::vec2 pos, glm::vec2 vel, float r, float m);
+    void Destroy();
     void Update();
     void Draw(sf::RenderWindow& window);
     bool IsCollide(const Ball& other);
     void ResolveCollision(Ball& other);
 public:
-
-    static constexpr float max_speed = 10.0f;
+    bool isAlive = false;
     bool enteringScreen = true;
     size_t id = 0;
     glm::vec2 position;

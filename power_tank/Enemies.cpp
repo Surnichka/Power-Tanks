@@ -19,7 +19,7 @@ void Enemies::Update()
     counterTimer++;
     if(counterTimer > 50)
     {
-        SpawnEnemy();
+//        SpawnEnemy();
         counterTimer = 0;
     }
 
@@ -71,22 +71,22 @@ void Enemies::SpawnEnemy()
         case 1: //Left Side
         {
             pos.x = Random(-50, -150)(rng);
-            pos.y = Random(50, Window::height - 50)(rng);
+            pos.y = Random(50, Window::Playable::height - 50)(rng);
         }break;
         case 2: //Right Side
         {
-            pos.x = Random(Window::width + 50, Window::width + 150)(rng);
-            pos.y = Random(50, Window::height - 50)(rng);
+            pos.x = Random(Window::Playable::width + 50, Window::Playable::width + 150)(rng);
+            pos.y = Random(50, Window::Playable::height - 50)(rng);
         }break;
         case 3: //Top Side
         {
-             pos.x = Random(50, Window::width - 50)(rng);
+             pos.x = Random(50, Window::Playable::width - 50)(rng);
              pos.y = Random(-50, - 150)(rng);
         }break;
     }
 
     float speed = Random(5.f, 5.f)(rng);
-    glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
+    glm::vec2 centerPos = {Window::Playable::width / 2.0f, Window::Playable::height / 2.0f};
     glm::vec2 disp = centerPos - pos;
     float distance = std::hypot(disp.x, disp.y);
     glm::vec2 velocity = disp * (speed / distance);

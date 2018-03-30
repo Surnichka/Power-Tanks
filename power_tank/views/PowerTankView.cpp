@@ -8,12 +8,12 @@ void PowerTankView::Init()
 
     const int rowsCount = 50;
     int yPos = 0;
-    int height = Window::height / rowsCount;
+    int height = Window::Playable::height / rowsCount;
     for(int i = 0; i < rowsCount; i++)
     {
         sf::RectangleShape rect;
         rect.setPosition(0, yPos);
-        rect.setSize({Window::width, float(height)});
+        rect.setSize({Window::Playable::width, float(height)});
 
         if( i % 2 ){ rect.setFillColor({170,170,170}); }
         else{ rect.setFillColor({144, 144, 144}); }

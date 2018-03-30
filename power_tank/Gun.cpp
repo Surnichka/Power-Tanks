@@ -1,41 +1,41 @@
 #include "Gun.h"
 #include "Window.h"
 
-void Gun::Init(const glm::vec2& playerPos, const sf::Vector2i& mousePos)
+void Gun::Init(int frameRate, int damage)
 {
-    float radius = 4;
-    glm::vec2 velocity = {4.0f, 4.0f};
-    glm::vec2 bulletPos = playerPos;
-    Ball bullet;
-    bullet.Init(bulletPos, velocity, radius, radius);
-    bullet.isAlive = true;
-    bullets.push_back(bullet);
-    Shoot(mousePos);
+
 }
 
-void Gun::Shoot(const float& rotation)
+void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
 {
-    float xPos = mousePos.x;
-    float yPos = mousePos.y;
+    glm::vec2 disp = destPos - srcPos;
+    float distance = std::hypot(disp.x, disp.y);
+    glm::vec2 velocity = disp * (bullet_speed / distance);
 
-    auto widthPos = Window::width / 2;
-    auto heightPos = Window::height / 2;
+    Ball bullet(srcPos, velocity, bullet_radius, bullet_mass);
+    bullets.emplace_back(std::move(bullet));
 }
 
 void Gun::Update()
 {
+    for (auto& bullet : bullets)
+    {
+        bullet.Update();
+    }
+
     auto iter = remove_if(bullets.begin(), bullets.end(), [](const Ball& bullet)
     {
        return bullet.isAlive == false;
     });
-
     bullets.erase(iter, bullets.end());
 }
 
 void Gun::Draw(sf::RenderWindow &window)
 {
-    for (const auto& bullet : bullets)
+    for (auto& bullet : bullets)
     {
-        window.draw(bullet.circle);
+        bullet.Draw(window);
     }
 }
+
+

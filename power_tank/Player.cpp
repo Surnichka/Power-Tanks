@@ -6,6 +6,8 @@
 
 void Player::Init()
 {
+    gun.Init(1, 1);
+
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
@@ -28,6 +30,12 @@ void Player::Init()
     GetSignals().ConnectSlot("player_move_left", [this]() { direction |= Direction::Left; });
     GetSignals().ConnectSlot("player_move_up", [this]() { direction |= Direction::Up; });
     GetSignals().ConnectSlot("player_move_down", [this]() { direction |= Direction::Down; });
+    GetSignals().ConnectSlot("player_shoot", [this]()
+    {
+        glm::vec2 srcPos = {barrel.getPosition().x,barrel.getPosition().y};
+        glm::vec2 dstPos = {mousePos.x, mousePos.y};
+        gun.Shoot(srcPos, dstPos);
+    });
 }
 
 void Player::Update()
@@ -35,6 +43,7 @@ void Player::Update()
     player.velocity = Move();
     direction = Direction::None;
 
+    gun.Update();
     player.Update();
     barrel.setPosition(player.position.x, player.position.y);
 }
@@ -43,6 +52,8 @@ void Player::Draw(sf::RenderWindow &window)
 {
     mousePos = sf::Mouse::getPosition(window);
     LookAtMousePos();
+
+    gun.Draw(window);
     player.Draw(window);
     window.draw(barrel);
 }
@@ -67,8 +78,8 @@ void Player::LookAtMousePos()
 {
      double dx = double(mousePos.x - barrel.getPosition().x);
      double dy = double(mousePos.y - barrel.getPosition().y);
-     double rotation = (atan2(dy, dx)) * 180 / M_PI;
-     barrel.setRotation(float(rotation-270));
+     float angle = float(atan2(dy, dx) * 180 / M_PI - 270);
+     barrel.setRotation(angle);
 }
 
 

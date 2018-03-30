@@ -20,6 +20,7 @@ Ball::Ball(glm::vec2 pos, glm::vec2 vel, float r, float m)
 void Ball::Init(glm::vec2 pos, glm::vec2 vel, float r, float m)
 {
     id = getFreeId();
+    isAlive = true;
 
     position = pos;
     velocity = vel;
@@ -34,12 +35,18 @@ void Ball::Init(glm::vec2 pos, glm::vec2 vel, float r, float m)
     circle.setOutlineColor(sf::Color::Black);
 }
 
+void Ball::Destroy()
+{
+    isAlive = false;
+}
+
 void Ball::Update()
 {
     position += velocity;
     if( enteringScreen )
     {
-        static const sf::FloatRect windowRect = {0, 0, Window::width, Window::height};
+        static const sf::FloatRect windowRect = {0, 0, Window::Playable::width,
+                                                       Window::Playable::height};
         if(windowRect.contains(position.x, position.y))
         {
             enteringScreen = false;
@@ -47,9 +54,8 @@ void Ball::Update()
     }
     else
     {
-        velocity *= 0.999f;
-        float w = Window::width - radius;
-        float h = Window::height - radius;
+        float w = Window::Playable::width - radius;
+        float h = Window::Playable::height - radius;
 
         if( position.x <= 0 || position.x >= w) velocity.x *= (-1);
         if( position.y <= 0 || position.y >= h) velocity.y *= (-1);
