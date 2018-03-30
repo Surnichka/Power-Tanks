@@ -7,7 +7,7 @@ class Enemies
 {
 public:
     void Init();
-    void Update();
+    void Update(float dt);
     std::vector<Ball>& GetEnemies();
     void Draw(sf::RenderWindow& window);
 private:

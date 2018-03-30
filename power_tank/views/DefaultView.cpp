@@ -5,7 +5,7 @@ void DefaultView::Init()
 
 }
 
-void DefaultView::Update()
+void DefaultView::Update(float dt)
 {
 
 }

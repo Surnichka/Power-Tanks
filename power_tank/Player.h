@@ -9,10 +9,11 @@ class Player
 {
 public:
     void Init();
-    void Update();
+    void Update(float dt);
     void Draw(sf::RenderWindow& window);
     glm::vec2 Move();
     Ball& GetPlayer();
+    Gun& GetGun();
 private:
     void LookAtMousePos();
     Gun gun;

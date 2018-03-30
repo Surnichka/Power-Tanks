@@ -19,87 +19,104 @@ Ball::Ball(glm::vec2 pos, glm::vec2 vel, float r, float m)
 
 void Ball::Init(glm::vec2 pos, glm::vec2 vel, float r, float m)
 {
-    id = getFreeId();
-    isAlive = true;
+    m_id = getFreeId();
 
-    position = pos;
-    velocity = vel;
-    radius = r;
-    mass = m;
+    m_position = pos;
+    m_velocity = vel;
+    m_radius = r;
+    m_mass = m;
 
-    circle.setPosition(pos.x, pos.y);
-    circle.setRadius(r);
-    circle.setOrigin(r, r);
-    circle.setFillColor(sf::Color::White);
-    circle.setOutlineThickness(1);
-    circle.setOutlineColor(sf::Color::Black);
+    m_circle.setPosition(pos.x, pos.y);
+    m_circle.setRadius(r);
+    m_circle.setOrigin(r, r);
+    m_circle.setFillColor(sf::Color::White);
+    m_circle.setOutlineThickness(1);
+    m_circle.setOutlineColor(sf::Color::Black);
 }
 
 void Ball::Destroy()
 {
-    isAlive = false;
+    m_health = 0;
 }
 
-void Ball::Update()
+void Ball::TakeLife(int damage)
 {
-    position += velocity;
-    if( enteringScreen )
+    m_health = std::max(0, m_health - damage);
+}
+
+void Ball::Update(float dt)
+{
+    m_position += m_velocity;
+    if( m_enteringScreen )
     {
         static const sf::FloatRect windowRect = {0, 0, Window::Playable::width,
                                                        Window::Playable::height};
-        if(windowRect.contains(position.x, position.y))
+        if(windowRect.contains(m_position.x, m_position.y))
         {
-            enteringScreen = false;
+            m_enteringScreen = false;
         }
     }
     else
     {
-        float w = Window::Playable::width - radius;
-        float h = Window::Playable::height - radius;
+        float w = Window::Playable::width - m_radius;
+        float h = Window::Playable::height - m_radius;
 
-        if( position.x <= 0 || position.x >= w) velocity.x *= (-1);
-        if( position.y <= 0 || position.y >= h) velocity.y *= (-1);
+        bool wallHitted = false;
+        if( m_position.x <= 0 || m_position.x >= w)
+        {
+            m_velocity.x *= (-1);
+            wallHitted = true;
+        }
+        if( m_position.y <= 0 || m_position.y >= h)
+        {
+            m_velocity.y *= (-1);
+            wallHitted = true;
+        }
 
-        position.x = glm::clamp<float>(position.x, 0, w);
-        position.y = glm::clamp<float>(position.y, 0, h);
+        if( wallHitted )
+        {
+            if(nullptr != m_onWallHit)
+            {
+                m_onWallHit(*this);
+            }
+        }
+        m_position.x = glm::clamp<float>(m_position.x, 0, w);
+        m_position.y = glm::clamp<float>(m_position.y, 0, h);
     }
 
     //Update the circle for drawing
-    circle.setPosition(position.x, position.y);
+    m_circle.setPosition(m_position.x, m_position.y);
 }
 
 void Ball::Draw(sf::RenderWindow &window)
 {
-    window.draw(circle);
+    window.draw(m_circle);
 }
 
-bool Ball::IsCollide(const Ball &other)
+bool Ball::IsCollide(const Ball &other) const
 {
-    auto distance = glm::distance(position, other.position);
-
-    if ( distance <= (radius + other.radius) )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    auto distance = glm::distance(m_position, other.m_position);
+    return distance <= (m_radius + other.m_radius);
 }
 
 void Ball::ResolveCollision(Ball &other)
 {
-    float minimal = radius + other.radius;
-    position -= velocity;
-    other.position -= other.velocity;
-    glm::vec2 line = other.position - position;
+    if( nullptr != m_onCollision )
+    {
+        m_onCollision(*this, other);
+    }
+
+    float minimal = m_radius + other.m_radius;
+    m_position -= m_velocity;
+    other.m_position -= other.m_velocity;
+    glm::vec2 line = other.m_position - m_position;
     glm::vec2 un = glm::normalize(line);
     glm::vec2 ut = glm::vec2(-un.y, un.x);
     float distance = glm::dot(line, un);
-    float v1n = glm::dot(velocity, un);
-    float v2n = glm::dot(other.velocity, un);
-    float v1t = glm::dot(ut, velocity);
-    float v2t = glm::dot(ut, other.velocity);
+    float v1n = glm::dot(m_velocity, un);
+    float v2n = glm::dot(other.m_velocity, un);
+    float v1t = glm::dot(ut, m_velocity);
+    float v2t = glm::dot(ut, other.m_velocity);
 
     if(v1n == v2n)
     {
@@ -107,13 +124,28 @@ void Ball::ResolveCollision(Ball &other)
     }
 
     float t = (minimal - distance) / (v2n - v1n);
-    position += t * velocity;
-    other.position += t * other.velocity;
-    float newV1n = ((v1n*(mass-other.mass))+(2*other.mass*v2n))/(mass + other.mass);
-    float newV2n = ((v2n*(other.mass-mass))+(2*mass*v1n))/(mass + other.mass);
-    velocity = (newV1n*un) + (v1t*ut);
-    other.velocity = (newV2n*un) + (v2t*ut);
+    m_position += t * m_velocity;
+    other.m_position += t * other.m_velocity;
+    float newV1n = ((v1n*(m_mass-other.m_mass))+(2*other.m_mass*v2n))/(m_mass + other.m_mass);
+    float newV2n = ((v2n*(other.m_mass-m_mass))+(2*m_mass*v1n))/(m_mass + other.m_mass);
+    m_velocity = (newV1n*un) + (v1t*ut);
+    other.m_velocity = (newV2n*un) + (v2t*ut);
 
-    position += (1.0f - t) * velocity;
-    other.position += (1.0f -t) * other.velocity;
+    m_position += (1.0f - t) * m_velocity;
+    other.m_position += (1.0f -t) * other.m_velocity;
+}
+
+bool Ball::IsAlive() const
+{
+    return m_health != 0;
+}
+
+void Ball::OnWallCollide(Ball::OnWallHitFunc onWallHitFunc)
+{
+    m_onWallHit = onWallHitFunc;
+}
+
+void Ball::OnCollideOtherBall(Ball::OnCollisionFunc onColFunc)
+{
+    m_onCollision = onColFunc;
 }

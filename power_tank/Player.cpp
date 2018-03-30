@@ -6,13 +6,23 @@
 
 void Player::Init()
 {
-    gun.Init(1, 1);
+    gun.Init(500.0f, 1);
 
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
     player.Init(centerPos, {}, radius, radius);
-    player.circle.setFillColor({192,192,192});
+    player.m_circle.setFillColor({192,192,192});
+    player.m_health = 10;
+    player.OnCollideOtherBall([](Ball& self, Ball& other)
+    {
+        other.Destroy();
+        self.TakeLife(1);
+        if( false == self.IsAlive() )
+        {
+            self.m_circle.setFillColor(sf::Color::Red);
+        }
+    });
 
     sf::Vector2f playerCenter;
     playerCenter.x = centerPos.x + radius;
@@ -38,14 +48,14 @@ void Player::Init()
     });
 }
 
-void Player::Update()
+void Player::Update(float dt)
 {
-    player.velocity = Move();
+    player.m_velocity = Move();
     direction = Direction::None;
 
-    gun.Update();
-    player.Update();
-    barrel.setPosition(player.position.x, player.position.y);
+    gun.Update(dt);
+    player.Update(dt);
+    barrel.setPosition(player.m_position.x, player.m_position.y);
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -72,6 +82,11 @@ glm::vec2 Player::Move()
 Ball &Player::GetPlayer()
 {
     return player;
+}
+
+Gun &Player::GetGun()
+{
+    return gun;
 }
 
 void Player::LookAtMousePos()

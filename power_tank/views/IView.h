@@ -10,7 +10,7 @@ public:
     virtual ~IView() = default;
 
     virtual void Init() = 0;
-    virtual void Update() = 0;
+    virtual void Update(float dt) = 0;
     virtual void Draw(sf::RenderWindow& window) = 0;
     virtual void Show() = 0;
     virtual void Hide() = 0;

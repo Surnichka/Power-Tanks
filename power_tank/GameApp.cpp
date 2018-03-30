@@ -33,9 +33,9 @@ void GameApp::Init()
     });
 }
 
-void GameApp::Update()
+void GameApp::Update(float dt)
 {
-    m_views.at(m_currentView)->Update();
+    m_views.at(m_currentView)->Update(dt);
 }
 
 void GameApp::Draw(sf::RenderWindow &window)

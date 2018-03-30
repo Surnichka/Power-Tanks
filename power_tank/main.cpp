@@ -22,21 +22,15 @@ int main()
         {
             if(event.type == sf::Event::Closed)
                 window.close();
-
-            if(event.type == sf::Event::MouseButtonPressed &&
-              event.mouseButton.button == sf::Mouse::Button::Left)
-            {
-                GetSignals().Dispatch("SpawnEnemy");
-                GetSignals().Dispatch("player_shoot");
-            }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetSignals().Dispatch("player_move_left"); }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { GetSignals().Dispatch("player_move_right"); }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetSignals().Dispatch("player_move_up"); }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetSignals().Dispatch("player_move_down"); }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) { GetSignals().Dispatch("player_shoot"); }
 
         //Update metods
-        gameApp.Update();
+        gameApp.Update(20.0f);
         //Draw metods
         gameApp.Draw(window);
 

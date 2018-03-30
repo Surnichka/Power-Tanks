@@ -8,7 +8,7 @@ class GameApp
 {
 public:
     void Init();
-    void Update();
+    void Update(float dt);
     void Draw(sf::RenderWindow& window);
     void ChangeView(const std::string& viewName);
 private:

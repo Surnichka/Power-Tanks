@@ -1,5 +1,6 @@
 #include "PowerTankView.h"
 #include "../Window.h"
+#include "../Gun.h"
 
 void PowerTankView::Init()
 {
@@ -24,10 +25,10 @@ void PowerTankView::Init()
     }
 }
 
-void PowerTankView::Update()
+void PowerTankView::Update(float dt)
 {
-    m_enemies.Update();
-    m_player.Update();
+    m_enemies.Update(dt);
+    m_player.Update(dt);
 
     auto& player = m_player.GetPlayer();
     auto& enemies = m_enemies.GetEnemies();
@@ -37,6 +38,15 @@ void PowerTankView::Update()
         if( player.IsCollide(enemy) )
         {
             player.ResolveCollision(enemy);
+        }
+
+        auto& player_bullets = m_player.GetGun().GetBullets();
+        for(auto& bullet : player_bullets)
+        {
+            if( bullet.IsCollide(enemy) )
+            {
+                bullet.ResolveCollision(enemy);
+            }
         }
     }
 }

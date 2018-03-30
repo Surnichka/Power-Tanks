@@ -7,32 +7,35 @@
 
 void Enemies::Init()
 {
-    GetSignals().ConnectSlot("SpawnEnemy", [this]()
-    {
-        SpawnEnemy();
-    });
+
 }
 
-void Enemies::Update()
+void Enemies::Update(float dt)
 {
+    auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [](const Ball& bullet)
+    {
+       return bullet.IsAlive() == false;
+    });
+    m_enemies.erase(iter, m_enemies.end());
+
     static int counterTimer = 0;
     counterTimer++;
-    if(counterTimer > 50)
+    if(counterTimer > 100)
     {
-//        SpawnEnemy();
+        SpawnEnemy();
         counterTimer = 0;
     }
 
     for(auto& b : m_enemies)
     {
-        b.Update();
+        b.Update(dt);
     }
 
     for(auto& b1 : m_enemies)
     {
         for(auto& b2 : m_enemies)
         {
-            if( b1.id == b2.id )
+            if( b1.m_id == b2.m_id )
             {
                 continue;
             }
@@ -93,11 +96,9 @@ void Enemies::SpawnEnemy()
 
     float radius = Random(10.0f, 15.0f)(rng);
 
-    //Test
-//    pos = {300, 500};
-//    velocity = {0, 0};
-//    radius = 50;
-    Ball ball(pos, velocity, radius, radius);
+    Ball ball(pos, velocity, radius, radius * 10.0f);
+    ball.m_health = 5;
+
     m_enemies.push_back(ball);
 }
 
