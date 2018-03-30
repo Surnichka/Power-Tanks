@@ -15,13 +15,13 @@ void Enemies::Init()
 
 void Enemies::Update()
 {
-//    static int counterTimer = 0;
-//    counterTimer++;
-//    if(counterTimer > 200)
-//    {
-//        SpawnEnemy();
-//        counterTimer = 0;
-//    }
+    static int counterTimer = 0;
+    counterTimer++;
+    if(counterTimer > 50)
+    {
+        SpawnEnemy();
+        counterTimer = 0;
+    }
 
     for(auto& b : m_enemies)
     {
@@ -85,7 +85,7 @@ void Enemies::SpawnEnemy()
         }break;
     }
 
-    float speed = Random(0.85f, 4.7f)(rng);
+    float speed = Random(5.f, 5.f)(rng);
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
     glm::vec2 disp = centerPos - pos;
     float distance = std::hypot(disp.x, disp.y);
@@ -93,6 +93,10 @@ void Enemies::SpawnEnemy()
 
     float radius = Random(10.0f, 15.0f)(rng);
 
+    //Test
+//    pos = {300, 500};
+//    velocity = {0, 0};
+//    radius = 50;
     Ball ball(pos, velocity, radius, radius);
     m_enemies.push_back(ball);
 }

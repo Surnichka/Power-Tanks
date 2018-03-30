@@ -1,5 +1,7 @@
 #include "Ball.h"
 #include "Window.h"
+#include <iostream>
+#include <random>
 
 namespace
 {
@@ -45,6 +47,7 @@ void Ball::Update()
     }
     else
     {
+        velocity *= 0.999f;
         float w = Window::width - radius;
         float h = Window::height - radius;
 
@@ -64,51 +67,47 @@ void Ball::Draw(sf::RenderWindow &window)
     window.draw(circle);
 }
 
-bool Ball::IsCollide(const Ball &ball)
+bool Ball::IsCollide(const Ball &other)
 {
-    auto distance = glm::distance(position, ball.position);
-    float radiusSqrt = powf(radius + ball.radius, 2);
-    return distance < radiusSqrt;
+    auto distance = glm::distance(position, other.position);
+
+    if ( distance <= (radius + other.radius) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
-void Ball::ResolveCollision(Ball &ball)
+void Ball::ResolveCollision(Ball &other)
 {
+    float minimal = radius + other.radius;
+    position -= velocity;
+    other.position -= other.velocity;
+    glm::vec2 line = other.position - position;
+    glm::vec2 un = glm::normalize(line);
+    glm::vec2 ut = glm::vec2(-un.y, un.x);
+    float distance = glm::dot(line, un);
+    float v1n = glm::dot(velocity, un);
+    float v2n = glm::dot(other.velocity, un);
+    float v1t = glm::dot(ut, velocity);
+    float v2t = glm::dot(ut, other.velocity);
 
+    if(v1n == v2n)
+    {
+        return;
+    }
+
+    float t = (minimal - distance) / (v2n - v1n);
+    position += t * velocity;
+    other.position += t * other.velocity;
+    float newV1n = ((v1n*(mass-other.mass))+(2*other.mass*v2n))/(mass + other.mass);
+    float newV2n = ((v2n*(other.mass-mass))+(2*mass*v1n))/(mass + other.mass);
+    velocity = (newV1n*un) + (v1t*ut);
+    other.velocity = (newV2n*un) + (v2t*ut);
+
+    position += (1.0f - t) * velocity;
+    other.position += (1.0f -t) * other.velocity;
 }
-
-//void Ball::ResolveCollision(Ball &ball)
-//{
-//    glm::vec2 delta = position - ball.position;
-//    float d = delta.length();
-
-//    // minimum translation distance to push balls apart after intersecting
-//    glm::vec2 mtd = delta * ((radius + ball.radius)-d)/d;
-
-
-//    // resolve intersection --
-//    // inverse mass quantities
-//    float im1 = 1 / mass;
-//    float im2 = 1 / ball.mass;
-
-//    // push-pull them apart based off their mass
-//    position = position + mtd * (im1 / (im1 + im2));
-//    ball.position = ball.position - mtd * im2 / (im1 + im2);
-
-//    // impact speed
-//    glm::vec2 v = velocity - ball.velocity;
-//    float vn = glm::dot(v, glm::normalize(mtd));
-
-//    // sphere intersecting but moving away from each other already
-//    if (vn > 0.0f)
-//    {
-//        return;
-//    }
-
-//    float restitution = 0.5f;
-//    // collision impulse
-//    float i = (-(1.0f + restitution) * vn) / (im1 + im2);
-//    glm::vec2 impulse = glm::normalize(mtd) * i;
-
-//    velocity = velocity + impulse * im1;
-//    ball.velocity = ball.velocity - impulse * im2;
-//}
