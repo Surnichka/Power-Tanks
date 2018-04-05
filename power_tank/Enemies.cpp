@@ -5,28 +5,38 @@
 #include <random>
 #include <cmath>
 
+namespace
+{
+    static std::random_device rd;
+    static std::default_random_engine rng(rd());
+    using Random = std::uniform_real_distribution<float>;
+}
+
 void Enemies::Init()
 {
-
+//    SpawnEnemy({250, 250}, 50);
 }
 
 void Enemies::Update(float dt)
 {
-    auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [](const Ball& bullet)
+    for(const auto& ball : m_enemies)
     {
-       return bullet.IsAlive() == false;
-    });
-    m_enemies.erase(iter, m_enemies.end());
+        if( false == ball.IsAlive() )
+        {
+            GetSignals().Dispatch("add_points");
+            HandleSpawn(ball);
+        }
+    }
+    cleanUpDeadEnemies();
 
-    static int counterTimer = 0;
-    counterTimer++;
-    if(counterTimer > 100)
+    spawn_elapsed += dt;
+    if(spawn_elapsed > spawn_rate)
     {
         if( m_enemies.size() < max_enemies )
         {
             SpawnEnemy();
         }
-        counterTimer = 0;
+        spawn_elapsed = 0.0f;
     }
 
     for(auto& b : m_enemies)
@@ -38,7 +48,9 @@ void Enemies::Update(float dt)
     {
         for(auto& b2 : m_enemies)
         {
-            if( b1.m_id == b2.m_id )
+            if( b1.m_id == b2.m_id ||
+                b1.m_enteringScreen ||
+                b2.m_enteringScreen )
             {
                 continue;
             }
@@ -64,11 +76,50 @@ void Enemies::Draw(sf::RenderWindow &window)
     }
 }
 
+void Enemies::cleanUpDeadEnemies()
+{
+    auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [this](const Ball& self)
+    {
+        return (false == self.IsAlive());
+    });
+    m_enemies.erase(iter, m_enemies.end());
+}
+
+bool Enemies::HandleSpawn(const Ball& self)
+{
+    //TODO - When Borko Becomes Imba - Make This Awesome
+    if( self.m_radius <= max_split_radius )
+    {
+        return true;
+    }
+
+    float maxR = max_split_radius;
+    float r = std::max(maxR, self.m_radius - 8.0f);
+
+    SpawnEnemy(self.m_position - glm::vec2(self.m_radius/2, 0), r);
+    SpawnEnemy(self.m_position + glm::vec2(self.m_radius/2, 0), r);
+
+    return false;
+}
+
+void Enemies::SpawnEnemy(glm::vec2 pos, float r)
+{
+    float speed = Random(3.0f, 6.0f)(rng);
+    glm::vec2 centerPos = {Window::Playable::width / 2.0f, Window::Playable::height / 2.0f};
+    glm::vec2 disp = centerPos - pos;
+    float distance = std::hypot(disp.x, disp.y);
+    glm::vec2 velocity = disp * (speed / distance);
+
+    float radius = r;
+
+    Ball ball(pos, velocity, radius, radius * 10.0f);
+    ball.SetMaxHealth(health);
+
+    m_enemies.push_back(ball);
+}
+
 void Enemies::SpawnEnemy()
 {
-    std::random_device rd;
-    std::default_random_engine rng(rd());
-    using Random = std::uniform_real_distribution<float>;
     int placeSide = std::uniform_int_distribution<int>(1, 3)(rng);
 
     glm::vec2 pos;
@@ -90,18 +141,7 @@ void Enemies::SpawnEnemy()
              pos.y = Random(-50, - 150)(rng);
         }break;
     }
-
-    float speed = Random(3.0f, 6.0f)(rng);
-    glm::vec2 centerPos = {Window::Playable::width / 2.0f, Window::Playable::height / 2.0f};
-    glm::vec2 disp = centerPos - pos;
-    float distance = std::hypot(disp.x, disp.y);
-    glm::vec2 velocity = disp * (speed / distance);
-
     float radius = Random(15.0f, 30.0f)(rng);
-
-    Ball ball(pos, velocity, radius, radius * 10.0f);
-    ball.SetMaxHealth(int(radius / 3.0f));
-
-    m_enemies.push_back(ball);
+    SpawnEnemy(pos, radius);
 }
 

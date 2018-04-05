@@ -2,6 +2,7 @@
 #include "Window.h"
 #include <iostream>
 #include <random>
+#include "SignalSystem.h"
 
 namespace
 {
@@ -149,6 +150,11 @@ void Ball::SetMaxHealth(int health)
 {
     m_maxHealth = health;
     m_currentHealth = health;
+}
+
+int Ball::GetCurrentHealth()
+{
+    return m_currentHealth;
 }
 
 void Ball::OnCollideOtherBall(Ball::OnCollisionFunc onColFunc)

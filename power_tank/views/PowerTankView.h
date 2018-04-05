@@ -4,6 +4,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "../Enemies.h"
 #include "../Player.h"
+#include "../PanelView.h"
 
 class PowerTankView : public IView
 {
@@ -14,8 +15,9 @@ public:
     void Show() final override;
     void Hide() final override;
 private:
-    Enemies m_enemies;
     Player  m_player;
+    Enemies m_enemies;
+    PanelView m_panelView;
 
     std::vector<sf::RectangleShape> m_background;
 };

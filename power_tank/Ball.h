@@ -29,17 +29,20 @@ public:
     void OnWallCollide(OnWallHitFunc onWallHitFunc);
 
     void SetMaxHealth(int health);
+
+    int GetCurrentHealth();
 public:
-    OnWallHitFunc m_onWallHit;
-    OnCollisionFunc m_onCollision;
-    int m_maxHealth = 1;
-    int m_currentHealth = 1;
-    bool m_enteringScreen = true;
     size_t m_id = 0;
     glm::vec2 m_position;
     glm::vec2 m_velocity;
-    float m_radius;
+    OnWallHitFunc m_onWallHit;
+    OnCollisionFunc m_onCollision;
+
     float m_mass;
+    float m_radius;
+    int m_maxHealth = 1;
+    int m_currentHealth = 1;
+    bool m_enteringScreen = true;
 
     sf::CircleShape m_circle;
 };

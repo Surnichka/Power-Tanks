@@ -54,8 +54,9 @@ void PowerTankView::Update(float dt)
 void PowerTankView::Draw(sf::RenderWindow &window)
 {
     for(const auto& line : m_background) { window.draw(line); }
-    m_enemies.Draw(window);
     m_player.Draw(window);
+    m_enemies.Draw(window);
+    m_panelView.Draw(window);
 }
 
 void PowerTankView::Show()

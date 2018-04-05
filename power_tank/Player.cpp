@@ -1,21 +1,25 @@
 #include "Player.h"
 #include "Window.h"
+
 #include "SignalSystem.h"
 #include "SFML/Window/Mouse.hpp"
 #include "cmath"
 
 void Player::Init()
 {
+    gun.Init(500.0f, 10.5f, 1);
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
     player.Init(centerPos, {}, radius, radius);
     player.m_circle.setFillColor({192,192,192});
     player.SetMaxHealth(10);
-    player.OnCollideOtherBall([](Ball& self, Ball& other)
+    GetSignals().Dispatch("health_change", player.GetCurrentHealth());
+    player.OnCollideOtherBall([&](Ball& self, Ball& other)
     {
         other.Destroy();
         self.TakeLife(1);
+        GetSignals().Dispatch("health_change", self.GetCurrentHealth());
         if( false == self.IsAlive() )
         {
             self.m_circle.setFillColor(sf::Color::Red);
@@ -34,6 +38,7 @@ void Player::Init()
     barrel.setOutlineThickness(1.0f);
     barrel.setOutlineColor(sf::Color::Black);
 
+    GetSignals().Dispatch("move_speed",int(speed));
     GetSignals().ConnectSlot("player_move_right", [this]() { direction |= Direction::Right; });
     GetSignals().ConnectSlot("player_move_left", [this]() { direction |= Direction::Left; });
     GetSignals().ConnectSlot("player_move_up", [this]() { direction |= Direction::Up; });

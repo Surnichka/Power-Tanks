@@ -1,10 +1,15 @@
 #include "Gun.h"
 #include "Window.h"
+#include "SignalSystem.h"
 
-void Gun::Init(float frameRate, int damage)
+void Gun::Init(float frameRate, float bulletSpeed, int damage)
 {
     bullet_damage = damage;
+    bullet_speed = bulletSpeed;
     bullet_frame_rate = frameRate;
+    GetSignals().Dispatch("bullet_damage",bullet_damage);
+    GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+    GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
 }
 
 void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
@@ -66,6 +71,9 @@ void Gun::Update(float dt)
 {
     last_shoot += dt;
     last_ultimate += dt;
+
+    float cooldown = std::max(0.0f, (ultimate_cooldown - last_ultimate));
+    GetSignals().Dispatch("ultimate_cooldown", int(std::ceil(cooldown) / 1000));
 
     for (auto& bullet : bullets)
     {
