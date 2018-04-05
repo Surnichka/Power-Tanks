@@ -26,6 +26,7 @@ void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
 
     Ball bullet(srcPos, velocity, bullet_radius, 0.1f);
     bullet.SetMaxHealth(1);
+    bullet.m_circle.setFillColor({121, 131, 134});
     bullet.OnWallCollide([](Ball& self)
     {
         self.TakeLife(1);

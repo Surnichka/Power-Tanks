@@ -17,6 +17,9 @@ public:
     Gun& GetGun();
     Ball& GetPlayer();
 private:
+    bool IsInvulnarable();
+    void DebugMenu();
+
     void LookAtMousePos();
     enum Direction
     {
@@ -30,4 +33,7 @@ private:
     Ball player;
     sf::RectangleShape barrel;
     int direction = Direction::None;
+
+    static constexpr float invulnarabilityDuration = 1000.0f;
+    float elapsed_invulnaraibility_time = invulnarabilityDuration;
 };

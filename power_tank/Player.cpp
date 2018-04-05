@@ -1,22 +1,30 @@
 #include "Player.h"
 #include "Window.h"
-
+#include "DebugMenu.h"
 #include "SignalSystem.h"
 #include "SFML/Window/Mouse.hpp"
 #include "cmath"
 
 void Player::Init()
 {
-    gun.Init(500.0f, 10.5f, 1);
+    DebugMenu();
+
+    gun.Init(300.0f, 10.5f, 1);
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
     player.Init(centerPos, {}, radius, radius);
-    player.m_circle.setFillColor({192,192,192});
+    player.m_circle.setFillColor({92, 97, 112});
     player.SetMaxHealth(10);
     GetSignals().Dispatch("health_change", player.GetCurrentHealth());
     player.OnCollideOtherBall([&](Ball& self, Ball& other)
     {
+        if( IsInvulnarable() )
+        {
+            return;
+        }
+
+        elapsed_invulnaraibility_time = 0.0f;
         other.Destroy();
         self.TakeLife(1);
         GetSignals().Dispatch("health_change", self.GetCurrentHealth());
@@ -34,7 +42,7 @@ void Player::Init()
     barrel.setSize(barrelSize);
     barrel.setOrigin(barrelSize.x / 2, barrelSize.y);
     barrel.setPosition(centerPos.x, centerPos.y);
-    barrel.setFillColor({192,192,192});
+    barrel.setFillColor({121, 131, 134});
     barrel.setOutlineThickness(1.0f);
     barrel.setOutlineColor(sf::Color::Black);
 
@@ -60,6 +68,11 @@ void Player::Update(float dt)
 {
     player.m_velocity = Move();
     direction = Direction::None;
+    elapsed_invulnaraibility_time += dt;
+
+    auto color = player.m_circle.getFillColor();
+    color.a = IsInvulnarable() ? 30 : 255;
+    player.m_circle.setFillColor(color);
 
     gun.Update(dt);
     player.Update(dt);
@@ -90,6 +103,27 @@ glm::vec2 Player::Move()
 Ball &Player::GetPlayer()
 {
     return player;
+}
+
+bool Player::IsInvulnarable()
+{
+    return elapsed_invulnaraibility_time < invulnarabilityDuration;
+}
+
+void Player::DebugMenu()
+{
+    auto& debugMenu = GetDebugMenu();
+    debugMenu.AddButton("add_speed", [this]()
+    {
+        Player::speed++;
+        GetSignals().Dispatch("move_speed",int(speed));
+    });
+
+    debugMenu.AddButton("decrease_speed", [this]()
+    {
+        Player::speed--;
+        GetSignals().Dispatch("move_speed",int(speed));
+    });
 }
 
 Gun &Player::GetGun()

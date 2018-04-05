@@ -13,7 +13,7 @@ public:
 private:
     static constexpr float max_split_radius = 10.0f;
     static constexpr float max_split_per_dead = 1;
-    static const int max_enemies = 20;
+    static const int max_enemies = 30;
     static const int health = 3;
 
     static constexpr float spawn_rate = 1000.0f;
