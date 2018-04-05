@@ -113,13 +113,13 @@ bool Player::IsInvulnarable()
 void Player::DebugMenu()
 {
     auto& debugMenu = GetDebugMenu();
-    debugMenu.AddButton("add_speed", [this]()
+    debugMenu.AddButton("MOVE SPEED +", [this]()
     {
         Player::speed++;
         GetSignals().Dispatch("move_speed",int(speed));
     });
 
-    debugMenu.AddButton("decrease_speed", [this]()
+    debugMenu.AddButton("MOVE SPEED -", [this]()
     {
         Player::speed--;
         GetSignals().Dispatch("move_speed",int(speed));

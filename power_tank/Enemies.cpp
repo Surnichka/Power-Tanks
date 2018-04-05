@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "SignalSystem.h"
 #include "SFML/Window/Mouse.hpp"
+#include "DebugMenu.h"
 #include <random>
 #include <cmath>
 
@@ -32,7 +33,7 @@ void Enemies::Update(float dt)
     spawn_elapsed += dt;
     if(spawn_elapsed > spawn_rate)
     {
-        if( m_enemies.size() < max_enemies )
+        if( int(m_enemies.size()) < max_enemies )
         {
             SpawnEnemy();
         }

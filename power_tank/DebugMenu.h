@@ -17,8 +17,8 @@ private:
     void HandleInput(glm::vec2 mousePos);
     bool enabled = false;
 
-    static const int maxRow = 3;
-    static const int maxCol = 7;
+    static const int maxRow = 4;
+    static const int maxCol = 8;
     static const int cellWidth = 125;
     static const int cellHeight = 75;
 

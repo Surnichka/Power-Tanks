@@ -30,8 +30,8 @@ void DebugMenu::AddButton(const std::string &text, DebugMenu::Callback cb)
         return;
     }
 
-    int xPos = 100 + int(buttons.size() % maxCol) * cellWidth;
-    int yPos = 100 + int(buttons.size() % maxRow) * cellHeight;
+    int xPos = 150 + (buttons.size() / maxCol + (buttons.size() % maxCol)) * cellWidth;
+    int yPos = 150 + (buttons.size() / maxCol) * cellHeight;
 
     auto& font = FontMgr::Get().GetFont();
 
@@ -40,7 +40,7 @@ void DebugMenu::AddButton(const std::string &text, DebugMenu::Callback cb)
     sfText.setString(text);
     sfText.setFont(font);
     sfText.setScale(0.6f, 0.6f);
-    sfText.setPosition(xPos + 25, yPos + 25);
+    sfText.setPosition(xPos , yPos + 25);
 
     sf::RectangleShape rect;
     rect.setPosition(xPos, yPos);

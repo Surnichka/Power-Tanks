@@ -1,6 +1,7 @@
 #include "Gun.h"
 #include "Window.h"
 #include "SignalSystem.h"
+#include "DebugMenu.h"
 
 void Gun::Init(float frameRate, float bulletSpeed, int damage)
 {
@@ -10,6 +11,7 @@ void Gun::Init(float frameRate, float bulletSpeed, int damage)
     GetSignals().Dispatch("bullet_damage",bullet_damage);
     GetSignals().Dispatch("bullet_speed",int(bullet_speed));
     GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+    DebugMenu();
 }
 
 void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
@@ -74,7 +76,7 @@ void Gun::Update(float dt)
     last_ultimate += dt;
 
     float cooldown = std::max(0.0f, (ultimate_cooldown - last_ultimate));
-    GetSignals().Dispatch("ultimate_cooldown", int(std::ceil(cooldown) / 1000));
+    GetSignals().Dispatch("ultimate_cooldown", int(std::ceil((cooldown) / 1000.0f)));
 
     for (auto& bullet : bullets)
     {
@@ -99,6 +101,32 @@ void Gun::Draw(sf::RenderWindow &window)
 std::vector<Ball> &Gun::GetBullets()
 {
     return bullets;
+}
+
+void Gun::DebugMenu()
+{
+    auto& debugMenu = GetDebugMenu();
+    debugMenu.AddButton("FIRE RATE +", [this]()
+    {
+        Gun::bullet_frame_rate = std::max(0.0f,bullet_frame_rate - 25.0f);
+        GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+    });
+    debugMenu.AddButton("FIRE RATE -", [this]()
+    {
+        Gun::bullet_frame_rate += 25.0f;
+        GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+    });
+
+    debugMenu.AddButton("BULLET SPEED +", [this]()
+    {
+        Gun::bullet_speed += 1.0f;
+        GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+    });
+    debugMenu.AddButton("BULLET SPEED -", [this]()
+    {
+        Gun::bullet_speed = std::max(1.0f, bullet_speed - 1.0f);
+        GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+    });
 }
 
 

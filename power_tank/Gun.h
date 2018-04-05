@@ -11,6 +11,8 @@ public:
     void Draw(sf::RenderWindow& window);
     std::vector<Ball>& GetBullets();
 private:
+    void DebugMenu();
+
     int bullet_damage = 1;
     float last_shoot = 0.0f;
     float bullet_speed = 10.5f;
