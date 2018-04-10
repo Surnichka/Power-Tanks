@@ -56,7 +56,6 @@ void Player::Init()
 void Player::Update(float dt)
 {
     player.m_velocity = Move();
-    gun.setBarrelPositions(player.getCurrentPosition());
     direction = Direction::None;
     elapsed_invulnaraibility_time += dt;
 
@@ -66,6 +65,7 @@ void Player::Update(float dt)
 
     gun.Update(dt);
     player.Update(dt);
+    gun.setBarrelPositions(player.getCurrentPosition());
 }
 
 void Player::Draw(sf::RenderWindow &window)

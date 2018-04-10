@@ -39,6 +39,11 @@ PanelView::PanelView()
     {
         m_bullet_speed = bullet_speed;
     });
+
+    GetSignals().ConnectSlot("draw_pause", [this](int pause)
+    {
+        m_pause = pause;
+    });
 }
 
 void PanelView::DrawStats(sf::RenderWindow &window)
@@ -107,6 +112,18 @@ void PanelView::DrawStats(sf::RenderWindow &window)
     txtUltimate.setString("ULTIMATE CD: " + ultimate);
     txtUltimate.setPosition(Window::width / 2 + 200, Window::height - 70);
     window.draw(txtUltimate);
+
+    elapsedTime += 20;
+    sf::Text txtPause;
+    txtPause.setScale(4.0f,3.0f);
+    txtPause.setFont(font);
+    txtPause.setFillColor(sf::Color::Red);
+    txtPause.setString("PAUSE");
+    txtPause.setPosition(Window::width / 2 - 200 ,Window::height / 2 - 200);
+    if(m_pause)
+    {
+        window.draw(txtPause);
+    }
 }
 
 void PanelView::Draw(sf::RenderWindow &window)

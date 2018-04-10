@@ -29,6 +29,10 @@ int main()
             {
                 GetSignals().Dispatch("toggle_debug_menu");
             }
+            if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P)
+            {
+                GetSignals().Dispatch("pause_game");
+            }
             if(event.type == sf::Event::MouseButtonPressed &&
                event.mouseButton.button == sf::Mouse::Button::Left )
             {

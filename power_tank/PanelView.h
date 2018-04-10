@@ -19,4 +19,8 @@ private:
     int m_bullet_damage = 0;
     int m_ultimate_cooldown;
     // ENEMY
+
+    //GAME STATE
+    bool m_pause = false;
+    float elapsedTime = 0.0f;
 };

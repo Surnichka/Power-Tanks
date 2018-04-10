@@ -14,4 +14,5 @@ public:
 private:
     std::string m_currentView = "game_play_view";
     std::map<std::string, IView::Ptr> m_views;
+    bool pause = false;
 };

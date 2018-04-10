@@ -2,6 +2,7 @@
 #include "views/PowerTankView.h"
 #include "views/DefaultView.h"
 #include "SignalSystem.h"
+#include "Window.h"
 
 void GameApp::Init()
 {
@@ -31,10 +32,28 @@ void GameApp::Init()
     {
         m_currentView = "level_up_view";
     });
+
+    GetSignals().ConnectSlot("pause_game", [this]()
+    {
+        if (false == pause)
+        {
+            pause = true;
+        }
+        else
+        {
+            pause = false;
+        }
+        GetSignals().Dispatch("draw_pause", pause);
+    });
 }
 
 void GameApp::Update(float dt)
 {
+    if (pause)
+    {
+        return;
+    }
+
     m_views.at(m_currentView)->Update(dt);
 }
 
