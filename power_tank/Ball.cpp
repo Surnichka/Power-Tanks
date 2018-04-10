@@ -157,6 +157,11 @@ int Ball::GetCurrentHealth()
     return m_currentHealth;
 }
 
+glm::vec2 Ball::getCurrentPosition()
+{
+    return m_position;
+}
+
 void Ball::OnCollideOtherBall(Ball::OnCollisionFunc onColFunc)
 {
     m_onCollision = onColFunc;

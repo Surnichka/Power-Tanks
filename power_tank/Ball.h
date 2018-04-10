@@ -31,6 +31,7 @@ public:
     void SetMaxHealth(int health);
 
     int GetCurrentHealth();
+    glm::vec2 getCurrentPosition();
 public:
     size_t m_id = 0;
     glm::vec2 m_position;

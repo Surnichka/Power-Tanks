@@ -20,18 +20,15 @@ private:
     bool IsInvulnarable();
     void DebugMenu();
 
-    void LookAtMousePos();
     enum Direction
     {
         None = 0, Left = 1, Right = 2, Up = 4, Down = 8,
     };
 
     float speed = 7.0f;
-    sf::Vector2i mousePos;
 
     Gun gun;
     Ball player;
-    sf::RectangleShape barrel;
     int direction = Direction::None;
 
     static constexpr float invulnarabilityDuration = 1000.0f;

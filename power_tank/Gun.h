@@ -1,17 +1,21 @@
 #pragma once
 #include "Ball.h"
+#include "SFML/Graphics/RectangleShape.hpp"
 
 class Gun
 {
 public:
     void Init(float frameRate, float bulletSpeed, int damage);
-    void Shoot(const glm::vec2& srcPos, const glm::vec2& destPos);
-    void Ultimate(const glm::vec2& srcPos);
+    void Shoot();
+    void Ultimate();
     void Update(float dt);
     void Draw(sf::RenderWindow& window);
+    void setBarrelPositions(glm::vec2 pos);
     std::vector<Ball>& GetBullets();
 private:
+    void Shoot(glm::vec2 destPos);
     void DebugMenu();
+    void LookAtMousePos();
 
     int bullet_damage = 1;
     float last_shoot = 0.0f;
@@ -21,7 +25,9 @@ private:
     float ultimate_cooldown = 10000.0f;
     float last_ultimate = ultimate_cooldown;
 
+    sf::Vector2i mousePos;
     std::vector<Ball> bullets;
+    sf::RectangleShape barrel;
     static constexpr float bullet_radius = 4.0f;
     static constexpr float bullet_mass = 4.0f;
 };

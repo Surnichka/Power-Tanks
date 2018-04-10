@@ -2,7 +2,6 @@
 #include "Window.h"
 #include "DebugMenu.h"
 #include "SignalSystem.h"
-#include "SFML/Window/Mouse.hpp"
 #include "cmath"
 
 void Player::Init()
@@ -14,6 +13,7 @@ void Player::Init()
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
     player.Init(centerPos, {}, radius, radius);
+    gun.setBarrelPositions(player.getCurrentPosition());
     player.m_circle.setFillColor({92, 97, 112});
     player.SetMaxHealth(10);
     GetSignals().Dispatch("health_change", player.GetCurrentHealth());
@@ -38,14 +38,6 @@ void Player::Init()
     playerCenter.x = centerPos.x + radius;
     playerCenter.y = centerPos.y + radius;
 
-    sf::Vector2f barrelSize = {7, 30};
-    barrel.setSize(barrelSize);
-    barrel.setOrigin(barrelSize.x / 2, barrelSize.y);
-    barrel.setPosition(centerPos.x, centerPos.y);
-    barrel.setFillColor({121, 131, 134});
-    barrel.setOutlineThickness(1.0f);
-    barrel.setOutlineColor(sf::Color::Black);
-
     GetSignals().Dispatch("move_speed",int(speed));
     GetSignals().ConnectSlot("player_move_right", [this]() { direction |= Direction::Right; });
     GetSignals().ConnectSlot("player_move_left", [this]() { direction |= Direction::Left; });
@@ -53,20 +45,18 @@ void Player::Init()
     GetSignals().ConnectSlot("player_move_down", [this]() { direction |= Direction::Down; });
     GetSignals().ConnectSlot("player_shoot", [this]()
     {
-        glm::vec2 srcPos = {barrel.getPosition().x,barrel.getPosition().y};
-        glm::vec2 dstPos = {mousePos.x, mousePos.y};
-        gun.Shoot(srcPos, dstPos);
+        gun.Shoot();
     });
     GetSignals().ConnectSlot("player_shoot_supernova", [this]()
     {
-        glm::vec2 srcPos = {barrel.getPosition().x,barrel.getPosition().y};
-        gun.Ultimate(srcPos);
+        gun.Ultimate();
     });
 }
 
 void Player::Update(float dt)
 {
     player.m_velocity = Move();
+    gun.setBarrelPositions(player.getCurrentPosition());
     direction = Direction::None;
     elapsed_invulnaraibility_time += dt;
 
@@ -76,17 +66,12 @@ void Player::Update(float dt)
 
     gun.Update(dt);
     player.Update(dt);
-    barrel.setPosition(player.m_position.x, player.m_position.y);
 }
 
 void Player::Draw(sf::RenderWindow &window)
 {
-    mousePos = sf::Mouse::getPosition(window);
-    LookAtMousePos();
-
-    gun.Draw(window);
     player.Draw(window);
-    window.draw(barrel);
+    gun.Draw(window);
 }
 
 glm::vec2 Player::Move()
@@ -129,14 +114,6 @@ void Player::DebugMenu()
 Gun &Player::GetGun()
 {
     return gun;
-}
-
-void Player::LookAtMousePos()
-{
-     double dx = double(mousePos.x - barrel.getPosition().x);
-     double dy = double(mousePos.y - barrel.getPosition().y);
-     float angle = float(atan2(dy, dx) * 180 / M_PI - 270);
-     barrel.setRotation(angle);
 }
 
 

@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "SignalSystem.h"
 #include "DebugMenu.h"
+#include "SFML/Window/Mouse.hpp"
 
 void Gun::Init(float frameRate, float bulletSpeed, int damage)
 {
@@ -12,15 +13,52 @@ void Gun::Init(float frameRate, float bulletSpeed, int damage)
     GetSignals().Dispatch("bullet_speed",int(bullet_speed));
     GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
     DebugMenu();
+
+    sf::Vector2f barrelSize = {7, 30};
+    barrel.setSize(barrelSize);
+    barrel.setOrigin(barrelSize.x / 2, barrelSize.y);
+    barrel.setFillColor({121, 131, 134});
+    barrel.setOutlineThickness(1.0f);
+    barrel.setOutlineColor(sf::Color::Black);
 }
 
-void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
+void Gun::Ultimate()
+{
+    if(last_ultimate < ultimate_cooldown)
+    {
+        return;
+    }
+    last_ultimate = 0.0f;
+
+    float step = 1.0f;
+    for(float theta = 0; theta < 360; theta += step)
+    {
+        last_shoot = bullet_frame_rate;
+        glm::vec2 dstPos;
+        dstPos.x = barrel.getPosition().x + std::cos(theta);
+        dstPos.y = barrel.getPosition().y + std::sin(theta);
+        Shoot(dstPos);
+    }
+}
+
+void Gun::Shoot()
 {
     if( last_shoot < bullet_frame_rate )
     {
         return;
     }
     last_shoot = 0.0f;
+
+    glm::vec2 destPos = {mousePos.x, mousePos.y};
+    Shoot(destPos);
+}
+
+
+void Gun::Shoot(glm::vec2 destPos)
+{
+    glm::vec2 srcPos ;
+    srcPos.x = barrel.getPosition().x;
+    srcPos.y = barrel.getPosition().y;
 
     glm::vec2 disp = destPos - srcPos;
     float distance = std::hypot(disp.x, disp.y);
@@ -51,25 +89,6 @@ void Gun::Shoot(const glm::vec2& srcPos, const glm::vec2& destPos)
     bullets.emplace_back(std::move(bullet));
 }
 
-void Gun::Ultimate(const glm::vec2 &srcPos)
-{
-    if(last_ultimate < ultimate_cooldown)
-    {
-        return;
-    }
-    last_ultimate = 0.0f;
-
-    float step = 1.0f;
-    for(float theta = 0; theta < 360; theta += step)
-    {
-        last_shoot = bullet_frame_rate;
-        glm::vec2 dstPos;
-        dstPos.x = srcPos.x + std::cos(theta);
-        dstPos.y = srcPos.y + std::sin(theta);
-        Shoot(srcPos, dstPos);
-    }
-}
-
 void Gun::Update(float dt)
 {
     last_shoot += dt;
@@ -92,10 +111,27 @@ void Gun::Update(float dt)
 
 void Gun::Draw(sf::RenderWindow &window)
 {
+    mousePos = sf::Mouse::getPosition(window);
+    LookAtMousePos();
+
     for (auto& bullet : bullets)
     {
         bullet.Draw(window);
     }
+    window.draw(barrel);
+}
+
+void Gun::setBarrelPositions(glm::vec2 pos)
+{
+    barrel.setPosition(pos.x, pos.y);
+}
+
+void Gun::LookAtMousePos()
+{
+     double dx = double(mousePos.x - barrel.getPosition().x);
+     double dy = double(mousePos.y - barrel.getPosition().y);
+     float angle = float(atan2(dy, dx) * 180 / M_PI - 270);
+     barrel.setRotation(angle);
 }
 
 std::vector<Ball> &Gun::GetBullets()
