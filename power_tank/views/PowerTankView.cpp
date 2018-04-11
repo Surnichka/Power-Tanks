@@ -1,6 +1,7 @@
 #include "PowerTankView.h"
 #include "../Window.h"
 #include "../Gun.h"
+#include "../ShowBallInfo.h"
 
 void PowerTankView::Init()
 {

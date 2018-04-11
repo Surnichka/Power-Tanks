@@ -38,7 +38,15 @@ int main()
             {
                 auto mousePos = sf::Mouse::getPosition(window);
                 GetSignals().Dispatch("button_pressed", {mousePos.x, mousePos.y} );
+                GetSignals().Dispatch("left_button_pressed", {mousePos.x, mousePos.y} );
             }
+            if(event.type == sf::Event::MouseButtonPressed &&
+               event.mouseButton.button == sf::Mouse::Button::Right )
+            {
+                auto mousePos = sf::Mouse::getPosition(window);
+                GetSignals().Dispatch("right_button_pressed", {mousePos.x, mousePos.y} );
+            }
+
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetSignals().Dispatch("player_move_left"); }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { GetSignals().Dispatch("player_move_right"); }
