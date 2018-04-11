@@ -25,6 +25,7 @@ void Enemies::Update(float dt)
         if( false == ball.IsAlive() )
         {
             GetSignals().Dispatch("add_points");
+            GetSignals().Dispatch("gain_exp");
             HandleSpawn(ball);
         }
     }

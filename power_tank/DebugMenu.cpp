@@ -30,8 +30,8 @@ void DebugMenu::AddButton(const std::string &text, DebugMenu::Callback cb)
         return;
     }
 
-    int xPos = 150 + (buttons.size() / maxCol + (buttons.size() % maxCol)) * cellWidth;
-    int yPos = 150 + (buttons.size() / maxCol) * cellHeight;
+    int xPos = int(150 + (buttons.size() / maxCol + (buttons.size() % maxCol)) * cellWidth);
+    int yPos = int(150 + (buttons.size() / maxCol) * cellHeight);
 
     auto& font = FontMgr::Get().GetFont();
 

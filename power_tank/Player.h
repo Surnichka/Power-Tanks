@@ -4,6 +4,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "Ball.h"
 #include "Gun.h"
+#include "LevelCounter.h"
 
 class Player
 {
@@ -11,7 +12,6 @@ public:
     void Init();
     void Update(float dt);
     void Draw(sf::RenderWindow& window);
-    glm::vec2 Move();
 
     // GETTERS
     Gun& GetGun();
@@ -19,6 +19,7 @@ public:
 private:
     bool IsInvulnarable();
     void DebugMenu();
+    glm::vec2 Move();
 
     enum Direction
     {
@@ -29,6 +30,8 @@ private:
 
     Gun gun;
     Ball player;
+    LevelCounter lvlCount;
+
     int direction = Direction::None;
 
     static constexpr float invulnarabilityDuration = 1000.0f;

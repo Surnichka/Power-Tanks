@@ -91,6 +91,7 @@ void Gun::Shoot(glm::vec2 destPos)
 
 void Gun::Update(float dt)
 {
+    LookAtMousePos();
     last_shoot += dt;
     last_ultimate += dt;
 
@@ -112,7 +113,6 @@ void Gun::Update(float dt)
 void Gun::Draw(sf::RenderWindow &window)
 {
     mousePos = sf::Mouse::getPosition(window);
-    LookAtMousePos();
 
     for (auto& bullet : bullets)
     {

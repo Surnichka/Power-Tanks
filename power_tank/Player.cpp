@@ -51,6 +51,10 @@ void Player::Init()
     {
         gun.Ultimate();
     });
+    GetSignals().ConnectSlot("gain_exp", [this]()
+    {
+        lvlCount.GainExp();
+    });
 }
 
 void Player::Update(float dt)
@@ -72,6 +76,7 @@ void Player::Draw(sf::RenderWindow &window)
 {
     player.Draw(window);
     gun.Draw(window);
+    lvlCount.Draw(window);
 }
 
 glm::vec2 Player::Move()

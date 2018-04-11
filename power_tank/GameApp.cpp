@@ -35,14 +35,7 @@ void GameApp::Init()
 
     GetSignals().ConnectSlot("pause_game", [this]()
     {
-        if (false == pause)
-        {
-            pause = true;
-        }
-        else
-        {
-            pause = false;
-        }
+        pause = !pause;
         GetSignals().Dispatch("draw_pause", pause);
     });
 }
