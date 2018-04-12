@@ -4,6 +4,7 @@
 FontMgr::FontMgr()
 {
     AddFonts("default", "../fonts/OpenSans-Regular.ttf");
+    AddFonts("digits", "../fonts/DigitsFont.ttf");
     AddFonts("tusju", "../fonts/FFF_Tusj.ttf");
 }
 

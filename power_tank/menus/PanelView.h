@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics/RenderWindow.hpp"
-#include "FontMgr.h"
+#include "../utils/FontMgr.h"
 
 class PanelView
 {

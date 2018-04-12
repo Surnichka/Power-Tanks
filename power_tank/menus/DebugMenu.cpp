@@ -1,7 +1,7 @@
 #include "DebugMenu.h"
-#include "FontMgr.h"
+#include "../utils/FontMgr.h"
+#include "../utils/SignalSystem.h"
 #include <iostream>
-#include "SignalSystem.h"
 
 DebugMenu& GetDebugMenu()
 {
@@ -59,34 +59,10 @@ void DebugMenu::AddButton(const std::string &text, DebugMenu::Callback cb)
 
 void DebugMenu::Draw(sf::RenderWindow &window)
 {
-    if( false == enabled )
-    {
-        return;
-    }
-
-    for(const auto& button : buttons)
-    {
-        window.draw(button.rect);
-        window.draw(button.text);
-    }
+    BaseMenu::Draw(window);
 }
 
 void DebugMenu::HandleInput(glm::vec2 mousePos)
 {
-    if( false == enabled )
-    {
-        return;
-    }
-
-    for(const auto& button : buttons)
-    {
-        if( button.rect.getGlobalBounds().contains(mousePos.x, mousePos.y) )
-        {
-            if( nullptr != button.callback)
-            {
-                button.callback();
-            }
-        }
-    }
-
+    BaseMenu::HandleInput(mousePos);
 }

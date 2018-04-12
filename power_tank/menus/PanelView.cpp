@@ -1,6 +1,6 @@
 #include "PanelView.h"
-#include "SignalSystem.h"
-#include "Window.h"
+#include "../utils/SignalSystem.h"
+#include "../Window.h"
 
 PanelView::PanelView()
 {

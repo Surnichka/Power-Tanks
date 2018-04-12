@@ -1,8 +1,10 @@
 #include "Player.h"
 #include "Window.h"
-#include "DebugMenu.h"
-#include "SignalSystem.h"
+#include "menus/DebugMenu.h"
+#include "utils/SignalSystem.h"
 #include "cmath"
+
+#include "utils/ResourceMgr.h"
 
 void Player::Init()
 {

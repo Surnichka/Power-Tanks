@@ -1,0 +1,8 @@
+<TextureAtlas imagePath="sheet">
+	<SubTexture name="sword" path="../Sprites/sword.png"/>
+	<SubTexture name="quiver" path="../Sprites/quiver.png"/>
+	<SubTexture name="bullet" path="../Sprites/bullet.png"/>
+	<SubTexture name="archery" path="../Sprites/archery.png"/>
+	<SubTexture name="speed" path="../Sprites/speed.png"/>
+	<SubTexture name="plus" path="../Sprites/plus.png"/>
+</TextureAtlas>

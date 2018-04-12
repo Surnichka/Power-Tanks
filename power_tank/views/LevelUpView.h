@@ -1,12 +1,10 @@
 #pragma once
 #include "IView.h"
-#include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
-#include "../Enemies.h"
-#include "../Player.h"
-#include "../menus/PanelView.h"
+#include "SFML/Graphics/Sprite.hpp"
+#include "../menus/LevelUpMenu.h"
 
-class PowerTankView : public IView
+class LevelUpView : public IView
 {
 public:
     void Init() final override;
@@ -15,9 +13,6 @@ public:
     void Show() final override;
     void Hide() final override;
 private:
-    Player  m_player;
-    Enemies m_enemies;
-    PanelView m_panelView;
-
-    std::vector<sf::RectangleShape> m_background;
+    sf::RectangleShape rect;
+    LevelUpMenu levelMenu;
 };

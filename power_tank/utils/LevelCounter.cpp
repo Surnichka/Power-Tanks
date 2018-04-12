@@ -1,6 +1,6 @@
 #include "LevelCounter.h"
 #include "FontMgr.h"
-#include "Window.h"
+#include "../Window.h"
 
 LevelCounter::LevelCounter()
 {

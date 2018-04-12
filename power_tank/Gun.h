@@ -18,6 +18,8 @@ private:
     void LookAtMousePos();
 
     int bullet_damage = 1;
+    float bullet_radius = 4.0f;
+
     float last_shoot = 0.0f;
     float bullet_speed = 10.5f;
     float bullet_frame_rate = 200.0f;
@@ -28,6 +30,5 @@ private:
     sf::Vector2i mousePos;
     std::vector<Ball> bullets;
     sf::RectangleShape barrel;
-    static constexpr float bullet_radius = 4.0f;
     static constexpr float bullet_mass = 4.0f;
 };

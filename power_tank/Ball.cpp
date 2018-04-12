@@ -2,7 +2,7 @@
 #include "Window.h"
 #include <iostream>
 #include <random>
-#include "SignalSystem.h"
+#include "utils/SignalSystem.h"
 
 namespace
 {

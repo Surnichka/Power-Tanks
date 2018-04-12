@@ -1,5 +1,5 @@
 #include "TestView.h"
-#include "../SignalSystem.h"
+#include "../utils/SignalSystem.h"
 #include <random>
 #include "../Window.h"
 

@@ -4,7 +4,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "Ball.h"
 #include "Gun.h"
-#include "LevelCounter.h"
+#include "utils/LevelCounter.h"
 
 class Player
 {

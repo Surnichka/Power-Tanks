@@ -1,0 +1,41 @@
+                        POWER TANK FEATURES
+
+1. PAUSE - MODE
+- In pause you can see the enemy statistics like velocity , mass , damage, etc... when you point him with the mouse.
+
+2. CRITICAL 
+- The tank will have critical strike and critical damage
+
+3. ACTIVE SKILLS
+- The tank will have different active skills after he gains the necessery levels
+- On every 5 levels you will gain an new active skill
+    {
+        TIME DILATION - slows down the enemies speed
+        BERSERKER - when you get bellow 30% hp your damage increases
+        MORE GUNS - MORE GUNS!?
+    }
+
+4. PASSIVE SKILLS
+- The tank will have different passive skills after he gains the necessery levels
+  {
+      PIERCING SHOT - your bullet goes through more enemies
+      BOUNCING SHOT - your bullet can bounce before it (dies)
+  }
+
+5. TANK CLASSES
+- The tank will have different classes after level 10 from which the player can choose the one
+    which suits him the most
+- Light Tank - he will have more atk.speed , speed, and critical chance
+- Heavy Tank - he will have more health , damage and critical damage
+
+6. SHOW DAMAGE
+- When you hit an enemy it will show your damage for 0.5 miliseconds on top of him which will blend with time
+- Same goes when you hit critical but with different color (RED) 
+
+
+- Class skills      [][][][]
+- Ultimate skills   [][][][]
+
+
+
+

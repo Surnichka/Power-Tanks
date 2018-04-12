@@ -1,15 +1,16 @@
 #include "GameApp.h"
 #include "views/PowerTankView.h"
 #include "views/DefaultView.h"
+#include "views/LevelUpView.h"
 #include "views/TestView.h"
-#include "SignalSystem.h"
+#include "utils/SignalSystem.h"
 #include "Window.h"
 
 void GameApp::Init()
 {
 //    m_views["main_menu_view"] = std::make_shared<MainMenuView>();
     m_views["game_play_view"] = std::make_shared<PowerTankView>();
-//    m_views["level_up_view"]  = std::make_shared<LevelUpView>();
+    m_views["level_up_view"]  = std::make_shared<LevelUpView>();
     m_views["default_view"]   = std::make_shared<DefaultView>();
     m_views["test_view"]   = std::make_shared<TestView>();
 
@@ -18,19 +19,7 @@ void GameApp::Init()
         p.second->Init();
     }
 
-    GetSignals().ConnectSlot("back_button_pressed", [this]()
-    {
-        if( m_currentView == "level_up_view")
-        {
-            m_currentView = "game_play_view";
-        }
-        else if( m_currentView == "game_play_view" )
-        {
-            m_currentView = "main_menu_view";
-        }
-    });
-
-    GetSignals().ConnectSlot("level_up_rune_taken", [this]()
+    GetSignals().ConnectSlot("level_up", [this]()
     {
         m_currentView = "level_up_view";
     });

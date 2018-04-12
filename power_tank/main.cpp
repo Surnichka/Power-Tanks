@@ -3,8 +3,8 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window.hpp"
 #include "Window.h"
-#include "SignalSystem.h"
-#include "DebugMenu.h"
+#include "utils/SignalSystem.h"
+#include "menus/DebugMenu.h"
 
 int main()
 {
@@ -24,6 +24,11 @@ int main()
         {
             if(event.type == sf::Event::Closed)
                 window.close();
+
+            if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+            {
+                GetSignals().Dispatch("level_up");
+            }
 
             if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::F1)
             {

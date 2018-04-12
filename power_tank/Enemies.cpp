@@ -1,8 +1,8 @@
 #include "Enemies.h"
 #include "Window.h"
-#include "SignalSystem.h"
+#include "utils/SignalSystem.h"
 #include "SFML/Window/Mouse.hpp"
-#include "DebugMenu.h"
+#include "menus/DebugMenu.h"
 #include <random>
 #include <cmath>
 

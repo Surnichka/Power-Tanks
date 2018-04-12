@@ -1,7 +1,7 @@
 #include "Gun.h"
 #include "Window.h"
-#include "SignalSystem.h"
-#include "DebugMenu.h"
+#include "utils/SignalSystem.h"
+#include "menus/DebugMenu.h"
 #include "SFML/Window/Mouse.hpp"
 
 void Gun::Init(float frameRate, float bulletSpeed, int damage)
@@ -162,6 +162,19 @@ void Gun::DebugMenu()
     {
         Gun::bullet_speed = std::max(1.0f, bullet_speed - 1.0f);
         GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+    });
+
+    debugMenu.AddButton("BULLET DMG +", [this]()
+    {
+        Gun::bullet_damage += 1;
+        Gun::bullet_radius = std::min(bullet_radius + 1.0f, 8.0f);
+        GetSignals().Dispatch("bullet_damage",int(bullet_damage));
+    });
+    debugMenu.AddButton("BULLET DMG -", [this]()
+    {
+        Gun::bullet_damage = std::max(1, bullet_damage - 1);
+        Gun::bullet_radius = std::max(4.0f, bullet_radius - 1.0f);
+        GetSignals().Dispatch("bullet_damage",int(bullet_damage));
     });
 }
 
