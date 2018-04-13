@@ -12,7 +12,7 @@ public:
     void Draw(sf::RenderWindow& window);
     void ChangeView(const std::string& viewName);
 private:
-    std::string m_currentView = "level_up_view";
+    std::string m_currentView = "game_play_view";
     std::map<std::string, IView::Ptr> m_views;
     bool pause = false;
 };
