@@ -1,15 +1,15 @@
 #pragma once
 #include "glm/glm.hpp"
-#include "IBoid.h"
+#include "../boids/IBoid.h"
 #include <vector>
 
 class SteeringManager
 {
 public:
-    static void Seek(IBoid::Ptr me, const glm::vec2& target);
-    static void Flee(IBoid::Ptr me, const glm::vec2& target);
-    static void Wander(IBoid::Ptr me);
-    static void Pursuit(IBoid::Ptr me, const IBoid::Ptr target);
-    static void Evade(IBoid::Ptr me, const IBoid::Ptr target);
+    static void Seek(IBoid::WeakPtr weakMe, const glm::vec2& target);
+    static void Flee(IBoid::WeakPtr weakMe, const glm::vec2& target);
+    static void Wander(IBoid::WeakPtr weakMe);
+    static void Pursuit(IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakTarget);
+    static void Evade(IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakTarget);
 private:
 };

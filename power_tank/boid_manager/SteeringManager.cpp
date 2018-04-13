@@ -1,8 +1,14 @@
 #include "SteeringManager.h"
 #include <random>
 
-void SteeringManager::Seek(IBoid::Ptr me, const glm::vec2& target)
+void SteeringManager::Seek(IBoid::WeakPtr weakMe, const glm::vec2& target)
 {
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return;
+    }
+
     float slowingRadius = 100.0f;
 
     glm::vec2 desired_velocity = target - me->location;
@@ -18,8 +24,14 @@ void SteeringManager::Seek(IBoid::Ptr me, const glm::vec2& target)
     me->ApplyForce(force);
 }
 
-void SteeringManager::Flee(IBoid::Ptr me, const glm::vec2& target)
+void SteeringManager::Flee(IBoid::WeakPtr weakMe, const glm::vec2& target)
 {
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return;
+    }
+
     glm::vec2 desired_velocity = target - me->location;
     desired_velocity = glm::normalize(desired_velocity) * me->maxSpeed;
     desired_velocity = -desired_velocity;
@@ -28,8 +40,14 @@ void SteeringManager::Flee(IBoid::Ptr me, const glm::vec2& target)
     me->ApplyForce(force);
 }
 
-void SteeringManager::Wander(IBoid::Ptr me)
+void SteeringManager::Wander(IBoid::WeakPtr weakMe)
 {
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return;
+    }
+
     static float wanderAngle = 0.0f;
     float circleDistance = 5.0f;
     float angleChange = 15.0f;
@@ -54,8 +72,15 @@ void SteeringManager::Wander(IBoid::Ptr me)
     me->ApplyForce(force);
 }
 
-void SteeringManager::Pursuit(IBoid::Ptr me, const IBoid::Ptr target)
+void SteeringManager::Pursuit(IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakTarget)
 {
+    auto me = weakMe.lock();
+    auto target = weakTarget.lock();
+    if( nullptr == me || nullptr == target)
+    {
+        return;
+    }
+
     auto distance = target->location - me->location;
     float updatesNeeded = glm::length(distance) / me->maxSpeed;
 
@@ -68,8 +93,15 @@ void SteeringManager::Pursuit(IBoid::Ptr me, const IBoid::Ptr target)
     me->ApplyForce(force);
 }
 
-void SteeringManager::Evade(IBoid::Ptr me, const IBoid::Ptr target)
+void SteeringManager::Evade(IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakTarget)
 {
+    auto me = weakMe.lock();
+    auto target = weakTarget.lock();
+    if( nullptr == me || nullptr == target)
+    {
+        return;
+    }
+
     auto distance = target->location - me->location;
     float updatesNeeded = glm::length(distance) / me->maxSpeed;
 

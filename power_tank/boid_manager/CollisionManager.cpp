@@ -3,21 +3,26 @@
 
 namespace
 {
-    static const sf::FloatRect collisionWindow =
-        {200, 200, Window::Playable::width-200, Window::Playable::height-200};
+    static const sf::FloatRect collisionWindow = {0, 0, Window::width, Window::height};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CollisionManager::WallHitInfo CollisionManager::IsWallHit(const IBoid::Ptr me) const
+CollisionManager::WallHitInfo CollisionManager::IsWallHit(const IBoid::WeakPtr weakMe) const
 {
-    glm::vec2 ahead = me->location + me->velocity + me->radius;
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return WallHitInfo::NoCollision;
+    }
+
+    glm::vec2 ahead = me->location + me->velocity;
     WallHitInfo wallHitInfo = collisionWindow.contains(ahead.x, ahead.y) ?
                 WallHitInfo::FromOutside : WallHitInfo::FromInside;
 
-    if( (me->location.x + me->radius < collisionWindow.left)   ||
-        (me->location.x + me->radius > collisionWindow.width)  ||
-        (me->location.y + me->radius < collisionWindow.top)    ||
-        (me->location.y + me->radius > collisionWindow.height) )
+    if( (me->location.x < collisionWindow.left)   ||
+        (me->location.x > collisionWindow.width)  ||
+        (me->location.y < collisionWindow.top)    ||
+        (me->location.y > collisionWindow.height) )
     {
         return wallHitInfo;
     }
@@ -25,16 +30,35 @@ CollisionManager::WallHitInfo CollisionManager::IsWallHit(const IBoid::Ptr me) c
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CollisionManager::IsCollding(const IBoid::Ptr me, const IBoid::Ptr other) const
+bool CollisionManager::IsCollding(const IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakOther) const
 {
+    auto me = weakMe.lock();
+    auto other = weakOther.lock();
+    if( nullptr == me || nullptr == other)
+    {
+        return false;
+    }
+
     float distance = glm::distance(me->location, other->location);
     float sumRadius = me->radius + other->radius;
     return distance <= sumRadius;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CollisionManager::Process(IBoid::Ptr me, IBoid::Ptr other)
+void CollisionManager::Process(IBoid::WeakPtr weakMe, IBoid::WeakPtr weakOther)
 {
+    auto me = weakMe.lock();
+    auto other = weakOther.lock();
+    if( nullptr == me || nullptr == other)
+    {
+        return;
+    }
+
+    if( me == other )
+    {
+        return;
+    }
+
     auto wallHitInfo = IsWallHit(me);
     if( WallHitInfo::NoCollision != wallHitInfo )
     {
@@ -87,32 +111,51 @@ void CollisionManager::SetOnCollisionCB(CollisionManager::OnCollisionCB onCollis
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CollisionManager::Preset::BounceFromWall(IBoid::Ptr me, CollisionManager::WallHitInfo wallHitInfo)
+void CollisionManager::Preset::BounceFromWall(IBoid::WeakPtr weakMe, CollisionManager::WallHitInfo wallHitInfo)
 {
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return;
+    }
+
     if( WallHitInfo::FromInside == wallHitInfo )
     {
-        if(me->location.x + me->radius < collisionWindow.left) { me->velocity.x *= (-1); }
-        if(me->location.y + me->radius < collisionWindow.top) { me->velocity.y *= (-1); }
-        if(me->location.x + me->radius > collisionWindow.width)  { me->velocity.x *= (-1); }
-        if(me->location.y + me->radius > collisionWindow.height) { me->velocity.y *= (-1); }
+        if(me->location.x< collisionWindow.left) { me->velocity.x *= (-1); }
+        if(me->location.y< collisionWindow.top) { me->velocity.y *= (-1); }
+        if(me->location.x> collisionWindow.width)  { me->velocity.x *= (-1); }
+        if(me->location.y> collisionWindow.height) { me->velocity.y *= (-1); }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CollisionManager::Preset::MoveThroughWall(IBoid::Ptr me, CollisionManager::WallHitInfo wallHitInfo)
+void CollisionManager::Preset::MoveThroughWall(IBoid::WeakPtr weakMe, CollisionManager::WallHitInfo wallHitInfo)
 {
+    auto me = weakMe.lock();
+    if( nullptr == me )
+    {
+        return;
+    }
+
     if( WallHitInfo::FromInside == wallHitInfo )
     {
-        if (me->location.x < -me->radius) me->location.x = Window::width + me->radius;
-        if (me->location.y < -me->radius) me->location.y = Window::height + me->radius;
-        if (me->location.x > Window::width + me->radius) me->location.x = -me->radius;
-        if (me->location.y > Window::height + me->radius) me->location.y = -me->radius;
+        if (me->location.x < 0) me->location.x = Window::width;
+        if (me->location.y < 0) me->location.y = Window::height;
+        if (me->location.x > Window::width) me->location.x = 0;
+        if (me->location.y > Window::height) me->location.y = 0;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CollisionManager::Preset::ResolveBallCollision(IBoid::Ptr me, IBoid::Ptr other)
+void CollisionManager::Preset::ResolveBallCollision(IBoid::WeakPtr weakMe, IBoid::WeakPtr weakOther)
 {
+    auto me = weakMe.lock();
+    auto other = weakOther.lock();
+    if( nullptr == me || nullptr == other)
+    {
+        return;
+    }
+
     float minimal = me->radius + other->radius;
     me->location -= me->velocity;
     other->location -= other->velocity;

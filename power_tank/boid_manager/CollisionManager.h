@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 #include "SFML/Graphics/Rect.hpp"
 #include <functional>
-#include "IBoid.h"
+#include "../boids/IBoid.h"
 
 class CollisionManager
 {
@@ -11,18 +11,18 @@ public:
 
     struct Preset
     {
-        static void BounceFromWall(IBoid::Ptr me, CollisionManager::WallHitInfo wallHitInfo);
-        static void MoveThroughWall(IBoid::Ptr me, CollisionManager::WallHitInfo wallHitInfo);
-        static void ResolveBallCollision(IBoid::Ptr me, IBoid::Ptr other);
+        static void BounceFromWall(IBoid::WeakPtr weakMe, CollisionManager::WallHitInfo wallHitInfo);
+        static void MoveThroughWall(IBoid::WeakPtr weakMe, CollisionManager::WallHitInfo wallHitInfo);
+        static void ResolveBallCollision(IBoid::WeakPtr weakMe, IBoid::WeakPtr weakOther);
     };
 
-    using ResolveWallHitFunc = std::function<void(IBoid::Ptr, WallHitInfo)>;
-    using ResolveCollisionFunc = std::function<void(IBoid::Ptr, IBoid::Ptr)>;
+    using ResolveWallHitFunc = std::function<void(IBoid::WeakPtr, WallHitInfo)>;
+    using ResolveCollisionFunc = std::function<void(IBoid::WeakPtr, IBoid::WeakPtr)>;
 
-    using OnWallHitCB = std::function<void(IBoid::Ptr)>;
-    using OnCollisionCB = std::function<void(IBoid::Ptr, IBoid::Ptr)>;
+    using OnWallHitCB = std::function<void(IBoid::WeakPtr)>;
+    using OnCollisionCB = std::function<void(IBoid::WeakPtr, IBoid::WeakPtr)>;
 
-    void Process(IBoid::Ptr me, IBoid::Ptr other);
+    void Process(IBoid::WeakPtr weakMe, IBoid::WeakPtr weakOther);
 
     void SetResolveWallHitFunc(ResolveWallHitFunc resolveWallHit);
     void SetResolveCollisionFunc(ResolveCollisionFunc resolveCollision);
@@ -30,8 +30,8 @@ public:
     void SetOnWallHitCB(OnWallHitCB onWallHitCB);
     void SetOnCollisionCB(OnCollisionCB onCollisionCB);
 private:
-    WallHitInfo IsWallHit(const IBoid::Ptr me) const;
-    bool IsCollding(const IBoid::Ptr me, const IBoid::Ptr other) const;
+    WallHitInfo IsWallHit(const IBoid::WeakPtr me) const;
+    bool IsCollding(const IBoid::WeakPtr weakMe, const IBoid::WeakPtr weakOther) const;
 
     OnWallHitCB m_onWallHitCB;
     OnCollisionCB m_onCollisionCB;

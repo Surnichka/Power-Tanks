@@ -2,6 +2,7 @@
 #include "views/PowerTankView.h"
 #include "views/LevelUpView.h"
 #include "views/BoidsExampleView.h"
+#include "views/TestView.h"
 #include "utils/SignalSystem.h"
 #include "Window.h"
 
@@ -11,6 +12,7 @@ void GameApp::Init()
     m_views["game_play_view"] = std::make_shared<PowerTankView>();
     m_views["level_up_view"]  = std::make_shared<LevelUpView>();
     m_views["boids_example_view"]   = std::make_shared<BoidsExampleView>();
+    m_views["test_view"] = std::make_shared<TestView>();
 
     for(auto& p : m_views)
     {
