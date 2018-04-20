@@ -28,6 +28,8 @@ void Player::Init()
 
         elapsed_invulnaraibility_time = 0.0f;
         other.Destroy();
+        GetBinder().DispatchSignal("enemy_died", other.m_position.x, other.m_position.y);
+
         self.TakeLife(1);
         GetBinder().DispatchSignal("health_change", self.GetCurrentHealth());
         if( false == self.IsAlive() )

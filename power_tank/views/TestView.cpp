@@ -9,54 +9,29 @@ namespace
     using Random = std::uniform_real_distribution<float>;
 }
 
+TestView::TestView()
+{
+
+}
+
 void TestView::Init()
 {
-    for(int i = 0; i < 10; i++)
-    {
-        glm::vec2 loc;
-        loc.x = Random(50, 1000)(rng);
-        loc.y = Random(50, 800)(rng);
 
-        auto dumb = DumbBoid::Create(loc);
-        dumbies.push_back(dumb);
-    }
-//    colMgr.SetResolveCollisionFunc(nullptr);
 }
 
 void TestView::Update(float dt)
 {
-    for(auto dumb1 : dumbies)
-    {
-        for(auto dumb2 : dumbies)
-        {
-            colMgr.Process(dumb1, dumb2);
-        }
-    }
-
-    for(auto dumb : dumbies)
-    {
-        dumb->Update();
-    }
-
+    m_particleSystem.Update(dt);
 }
 
 void TestView::Draw(sf::RenderWindow& window)
 {
-    auto m = sf::Mouse::getPosition(window);
-    if( sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-    {
-        dumbies.push_back(DumbBoid::Create({m.x, m.y}));
-    }
+    window.clear(sf::Color::White);
+    m_particleSystem.Draw(window);
 
-    window.clear({169, 169, 169});
-    for(auto dumb : dumbies)
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
     {
-        dumb->Draw(window);
-    }
-
-    for(auto dumb : dumbies)
-    {
-        //SteeringManager::Wander(dumb);
+        m_particleSystem.Emit(sf::Mouse::getPosition(window));
     }
 }
 

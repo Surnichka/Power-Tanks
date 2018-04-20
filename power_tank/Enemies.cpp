@@ -63,6 +63,8 @@ void Enemies::Update(float dt)
             }
         }
     }
+
+    m_enemyGotHit.Upadate(dt);
 }
 
 std::vector<Ball> &Enemies::GetEnemies()
@@ -76,6 +78,7 @@ void Enemies::Draw(sf::RenderWindow &window)
     {
         b.Draw(window);
     }
+    m_enemyGotHit.Draw(window);
 }
 
 void Enemies::cleanUpDeadEnemies()

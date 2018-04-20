@@ -3,6 +3,7 @@
 #include "libs/Binder/Binder.h"
 #include "menus/DebugMenu.h"
 #include "SFML/Window/Mouse.hpp"
+#include "utils/Utils.hpp"
 
 void Gun::Init(float frameRate, float bulletSpeed, int damage)
 {
@@ -76,14 +77,15 @@ void Gun::Shoot(glm::vec2 destPos)
     {
         self.TakeLife(1);
         other.TakeLife(bullet_damage);
+
+        GetBinder().DispatchSignal("enemy_got_hit", other.m_position.x, other.m_position.y, bullet_damage);
         if( false == other.IsAlive() )
         {
-            return;
+            GetBinder().DispatchSignal("enemy_died", other.m_position.x, other.m_position.y);
         }
 
-        //TODO - health color
-        float healthPercent = 1.0f / (float(other.m_currentHealth) / float(other.m_maxHealth));
-        uint8_t c = uint8_t(255.0f - (255.0f * healthPercent));
+        float colorCoeff = utils::map<float>(other.m_currentHealth, 0, other.m_maxHealth, 0.0f, 1.0f);
+        uint8_t c = uint8_t(255.0f * colorCoeff);
         other.m_circle.setFillColor({c, c, c});
     });
     bullets.emplace_back(std::move(bullet));

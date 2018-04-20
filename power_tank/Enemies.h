@@ -2,6 +2,7 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/CircleShape.hpp"
 #include "Ball.h"
+#include "EnemyGotHit.h"
 
 class Enemies
 {
@@ -11,9 +12,11 @@ public:
     std::vector<Ball>& GetEnemies();
     void Draw(sf::RenderWindow& window);
 private:
-    static constexpr int health = 3;
+    EnemyGotHit m_enemyGotHit;
+
+    static constexpr int health = 5;
     static constexpr int max_split_count = 3;
-    static constexpr float spawn_rate = 300.0f;
+    static constexpr float spawn_rate = 1000.0f;
     static constexpr float max_split_radius = 10.0f;
 
     float spawn_elapsed = 0.0f;

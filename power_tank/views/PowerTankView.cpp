@@ -2,6 +2,7 @@
 #include "../Window.h"
 #include "../Gun.h"
 #include "../ShowBallInfo.h"
+#include "../libs/Binder/Binder.h"
 
 void PowerTankView::Init()
 {
