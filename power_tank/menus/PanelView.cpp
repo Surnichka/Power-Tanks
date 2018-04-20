@@ -9,7 +9,7 @@ PanelView::PanelView()
         m_health = newHealth;
     });
 
-    GetBinder().ConnectSlot("add_points", [this]()
+    GetBinder().ConnectSlot("enemy_died", [this]()
     {
         ++m_totalPoints;
     });

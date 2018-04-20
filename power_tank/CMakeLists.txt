@@ -10,6 +10,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
     -pthread
-    -lsfml-graphics -lsfml-window -lsfml-system
+    -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
     -lfreetype
     -lGL)

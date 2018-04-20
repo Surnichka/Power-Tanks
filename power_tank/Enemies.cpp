@@ -24,8 +24,6 @@ void Enemies::Update(float dt)
     {
         if( false == ball.IsAlive() )
         {
-            GetBinder().DispatchSignal("add_points");
-            GetBinder().DispatchSignal("gain_exp");
             HandleSpawn(ball);
         }
     }
@@ -85,7 +83,12 @@ void Enemies::cleanUpDeadEnemies()
 {
     auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [this](const Ball& self)
     {
-        return (false == self.IsAlive());
+        if(false == self.IsAlive())
+        {
+            GetBinder().DispatchSignal("enemy_died", self.m_position.x, self.m_position.y);
+            return true;
+        }
+        return false;
     });
     m_enemies.erase(iter, m_enemies.end());
 }

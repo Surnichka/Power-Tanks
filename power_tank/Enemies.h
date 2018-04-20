@@ -14,9 +14,9 @@ public:
 private:
     EnemyGotHit m_enemyGotHit;
 
-    static constexpr int health = 5;
+    static constexpr int health = 1;
     static constexpr int max_split_count = 3;
-    static constexpr float spawn_rate = 1000.0f;
+    static constexpr float spawn_rate = 200.0f;
     static constexpr float max_split_radius = 10.0f;
 
     float spawn_elapsed = 0.0f;

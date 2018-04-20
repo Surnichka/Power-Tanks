@@ -48,6 +48,7 @@ void ParticleSystem::Update(float dt)
         {
             continue;
         }
+
         m_particles[i].elapsed += dt;
         m_particles[i].position += m_particles[i].velocity;
 

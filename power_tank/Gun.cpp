@@ -79,10 +79,6 @@ void Gun::Shoot(glm::vec2 destPos)
         other.TakeLife(bullet_damage);
 
         GetBinder().DispatchSignal("enemy_got_hit", other.m_position.x, other.m_position.y, bullet_damage);
-        if( false == other.IsAlive() )
-        {
-            GetBinder().DispatchSignal("enemy_died", other.m_position.x, other.m_position.y);
-        }
 
         float colorCoeff = utils::map<float>(other.m_currentHealth, 0, other.m_maxHealth, 0.0f, 1.0f);
         uint8_t c = uint8_t(255.0f * colorCoeff);

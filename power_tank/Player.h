@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "Gun.h"
 #include "utils/LevelCounter.h"
+#include "PlayerKillSound.h"
 
 class Player
 {
@@ -36,4 +37,6 @@ private:
 
     static constexpr float invulnarabilityDuration = 1000.0f;
     float elapsed_invulnaraibility_time = invulnarabilityDuration;
+
+    PlayerKillSound m_playerKillSound;
 };

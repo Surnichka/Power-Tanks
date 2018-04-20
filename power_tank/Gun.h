@@ -24,7 +24,7 @@ private:
     float bullet_speed = 10.5f;
     float bullet_frame_rate = 200.0f;
 
-    float ultimate_cooldown = 10000.0f;
+    float ultimate_cooldown = 100.0f;
     float last_ultimate = ultimate_cooldown;
 
     sf::Vector2i mousePos;

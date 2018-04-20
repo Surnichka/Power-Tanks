@@ -8,6 +8,8 @@
 
 void Player::Init()
 {
+    m_playerKillSound.Init();
+
     DebugMenu();
 
     gun.Init(300.0f, 10.5f, 1);
@@ -55,7 +57,7 @@ void Player::Init()
     {
         gun.Ultimate();
     });
-    GetBinder().ConnectSlot("gain_exp", [this]()
+    GetBinder().ConnectSlot("enemy_died", [this]()
     {
         lvlCount.GainExp();
     });
@@ -63,6 +65,7 @@ void Player::Init()
 
 void Player::Update(float dt)
 {
+    m_playerKillSound.Update(dt);
     player.m_velocity = Move();
     direction = Direction::None;
     elapsed_invulnaraibility_time += dt;
