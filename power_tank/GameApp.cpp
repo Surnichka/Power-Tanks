@@ -3,7 +3,7 @@
 #include "views/LevelUpView.h"
 #include "views/BoidsExampleView.h"
 #include "views/TestView.h"
-#include "utils/SignalSystem.h"
+#include "libs/Binder/Binder.h"
 #include "Window.h"
 
 void GameApp::Init()
@@ -19,15 +19,15 @@ void GameApp::Init()
         p.second->Init();
     }
 
-    GetSignals().ConnectSlot("level_up", [this]()
+    GetBinder().ConnectSlot("level_up", [this]()
     {
         m_currentView = "level_up_view";
     });
 
-    GetSignals().ConnectSlot("pause_game", [this]()
+    GetBinder().ConnectSlot("pause_game", [this]()
     {
         pause = !pause;
-        GetSignals().Dispatch("draw_pause", pause);
+        GetBinder().DispatchSignal("draw_pause", pause);
     });
 }
 

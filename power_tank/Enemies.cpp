@@ -1,6 +1,6 @@
 #include "Enemies.h"
 #include "Window.h"
-#include "utils/SignalSystem.h"
+#include "libs/Binder/Binder.h"
 #include "SFML/Window/Mouse.hpp"
 #include "menus/DebugMenu.h"
 #include <random>
@@ -24,8 +24,8 @@ void Enemies::Update(float dt)
     {
         if( false == ball.IsAlive() )
         {
-            GetSignals().Dispatch("add_points");
-            GetSignals().Dispatch("gain_exp");
+            GetBinder().DispatchSignal("add_points");
+            GetBinder().DispatchSignal("gain_exp");
             HandleSpawn(ball);
         }
     }

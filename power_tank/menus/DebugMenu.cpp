@@ -1,6 +1,6 @@
 #include "DebugMenu.h"
 #include "../utils/FontMgr.h"
-#include "../utils/SignalSystem.h"
+#include "../libs/Binder/Binder.h"
 #include <iostream>
 
 DebugMenu& GetDebugMenu()
@@ -11,14 +11,14 @@ DebugMenu& GetDebugMenu()
 
 DebugMenu::DebugMenu()
 {
-    GetSignals().ConnectSlot("toggle_debug_menu", [this]()
+    GetBinder().ConnectSlot("toggle_debug_menu", [this]()
     {
         enabled = !enabled;
     });
 
-    GetSignals().ConnectSlot("button_pressed", [this](glm::vec2 mousePos)
+    GetBinder().ConnectSlot("button_pressed", [this](int mouseX, int mouseY)
     {
-        HandleInput(mousePos);
+        HandleInput({mouseX, mouseY});
     });
 }
 

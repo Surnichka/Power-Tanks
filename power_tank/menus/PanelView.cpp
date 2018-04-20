@@ -1,45 +1,45 @@
 #include "PanelView.h"
-#include "../utils/SignalSystem.h"
+#include "../libs/Binder/Binder.h"
 #include "../Window.h"
 
 PanelView::PanelView()
 {
-    GetSignals().ConnectSlot("health_change", [this](int newHealth)
+    GetBinder().ConnectSlot("health_change", [this](int newHealth)
     {
         m_health = newHealth;
     });
 
-    GetSignals().ConnectSlot("add_points", [this]()
+    GetBinder().ConnectSlot("add_points", [this]()
     {
         ++m_totalPoints;
     });
 
-    GetSignals().ConnectSlot("move_speed", [this](int speed)
+    GetBinder().ConnectSlot("move_speed", [this](int speed)
     {
         m_move_speed = speed;
     });
 
-    GetSignals().ConnectSlot("ultimate_cooldown", [this](int timeLeft)
+    GetBinder().ConnectSlot("ultimate_cooldown", [this](int timeLeft)
     {
         m_ultimate_cooldown = timeLeft;
     });
 
-    GetSignals().ConnectSlot("bullet_damage", [this](int bulletDmg)
+    GetBinder().ConnectSlot("bullet_damage", [this](int bulletDmg)
     {
         m_bullet_damage = bulletDmg;
     });
 
-    GetSignals().ConnectSlot("fire_rate", [this](int fire_rate)
+    GetBinder().ConnectSlot("fire_rate", [this](int fire_rate)
     {
         m_fire_rate = fire_rate;
     });
 
-    GetSignals().ConnectSlot("bullet_speed", [this](int bullet_speed)
+    GetBinder().ConnectSlot("bullet_speed", [this](int bullet_speed)
     {
         m_bullet_speed = bullet_speed;
     });
 
-    GetSignals().ConnectSlot("draw_pause", [this](int pause)
+    GetBinder().ConnectSlot("draw_pause", [this](int pause)
     {
         m_pause = pause;
     });

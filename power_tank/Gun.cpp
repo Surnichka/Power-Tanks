@@ -1,6 +1,6 @@
 #include "Gun.h"
 #include "Window.h"
-#include "utils/SignalSystem.h"
+#include "libs/Binder/Binder.h"
 #include "menus/DebugMenu.h"
 #include "SFML/Window/Mouse.hpp"
 
@@ -9,9 +9,9 @@ void Gun::Init(float frameRate, float bulletSpeed, int damage)
     bullet_damage = damage;
     bullet_speed = bulletSpeed;
     bullet_frame_rate = frameRate;
-    GetSignals().Dispatch("bullet_damage",bullet_damage);
-    GetSignals().Dispatch("bullet_speed",int(bullet_speed));
-    GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+    GetBinder().DispatchSignal("bullet_damage",bullet_damage);
+    GetBinder().DispatchSignal("bullet_speed",int(bullet_speed));
+    GetBinder().DispatchSignal("fire_rate",int(bullet_frame_rate));
     DebugMenu();
 
     sf::Vector2f barrelSize = {7, 30};
@@ -96,7 +96,7 @@ void Gun::Update(float dt)
     last_ultimate += dt;
 
     float cooldown = std::max(0.0f, (ultimate_cooldown - last_ultimate));
-    GetSignals().Dispatch("ultimate_cooldown", int(std::ceil((cooldown) / 1000.0f)));
+    GetBinder().DispatchSignal("ultimate_cooldown", int(std::ceil((cooldown) / 1000.0f)));
 
     for (auto& bullet : bullets)
     {
@@ -145,36 +145,36 @@ void Gun::DebugMenu()
     debugMenu.AddButton("FIRE RATE +", [this]()
     {
         Gun::bullet_frame_rate = std::max(0.0f,bullet_frame_rate - 25.0f);
-        GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+        GetBinder().DispatchSignal("fire_rate",int(bullet_frame_rate));
     });
     debugMenu.AddButton("FIRE RATE -", [this]()
     {
         Gun::bullet_frame_rate += 25.0f;
-        GetSignals().Dispatch("fire_rate",int(bullet_frame_rate));
+        GetBinder().DispatchSignal("fire_rate",int(bullet_frame_rate));
     });
 
     debugMenu.AddButton("BULLET SPEED +", [this]()
     {
         Gun::bullet_speed += 1.0f;
-        GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+        GetBinder().DispatchSignal("bullet_speed",int(bullet_speed));
     });
     debugMenu.AddButton("BULLET SPEED -", [this]()
     {
         Gun::bullet_speed = std::max(1.0f, bullet_speed - 1.0f);
-        GetSignals().Dispatch("bullet_speed",int(bullet_speed));
+        GetBinder().DispatchSignal("bullet_speed",int(bullet_speed));
     });
 
     debugMenu.AddButton("BULLET DMG +", [this]()
     {
         Gun::bullet_damage += 1;
         Gun::bullet_radius = std::min(bullet_radius + 1.0f, 8.0f);
-        GetSignals().Dispatch("bullet_damage",int(bullet_damage));
+        GetBinder().DispatchSignal("bullet_damage",int(bullet_damage));
     });
     debugMenu.AddButton("BULLET DMG -", [this]()
     {
         Gun::bullet_damage = std::max(1, bullet_damage - 1);
         Gun::bullet_radius = std::max(4.0f, bullet_radius - 1.0f);
-        GetSignals().Dispatch("bullet_damage",int(bullet_damage));
+        GetBinder().DispatchSignal("bullet_damage",int(bullet_damage));
     });
 }
 
