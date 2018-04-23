@@ -13,6 +13,11 @@ void SoundMgr::AddSound(const std::string &key, const std::string &path)
 
 void SoundMgr::Play(const std::string &key)
 {
+    if (false == m_enableSound)
+    {
+        return;
+    }
+
     auto iter = m_sounds.find(key);
     if(iter != m_sounds.end())
     {

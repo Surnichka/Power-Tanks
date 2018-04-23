@@ -5,6 +5,7 @@
 #include "menus/DebugMenu.h"
 #include <random>
 #include <cmath>
+#include "SignalDefinitions.h"
 
 namespace
 {
@@ -16,15 +17,25 @@ namespace
 void Enemies::Init()
 {
 //    SpawnEnemy({250, 250}, 50);
+    GetBinder().ConnectSlot("level_up", [this](int currentLevel)
+    {
+        max_enemies_in_screen += 2;
+        spawn_rate = std::max(250.0f, spawn_rate - 750);
+        health++;
+        if( currentLevel == 3 )
+        {
+            chance_to_split = 50.0f;
+        }
+    });
 }
 
-void Enemies::Update(float dt)
+void Enemies::Update(float dt, const Ball& player)
 {
-    for(const auto& ball : m_enemies)
+    for(auto& enemy : m_enemies)
     {
-        if( false == ball.IsAlive() )
+        if( false == enemy.ball.IsAlive() )
         {
-            HandleSpawn(ball);
+            HandleSpawn(enemy);
         }
     }
     cleanUpDeadEnemies();
@@ -32,7 +43,7 @@ void Enemies::Update(float dt)
     spawn_elapsed += dt;
     if(spawn_elapsed > spawn_rate)
     {
-        if( int(m_enemies.size()) < max_enemies )
+        if( int(m_enemies.size()) < max_enemies_in_screen )
         {
             SpawnEnemy();
         }
@@ -41,31 +52,31 @@ void Enemies::Update(float dt)
 
     for(auto& b : m_enemies)
     {
-        b.Update(dt);
+        b.ball.Update(dt);
     }
 
     for(auto& b1 : m_enemies)
     {
         for(auto& b2 : m_enemies)
         {
-            if( b1.m_id == b2.m_id ||
-                b1.m_enteringScreen ||
-                b2.m_enteringScreen )
+            if( b1.ball.m_id == b2.ball.m_id ||
+                b1.ball.m_enteringScreen ||
+                b2.ball.m_enteringScreen )
             {
                 continue;
             }
 
-            if( b1.IsCollide(b2) )
+            if( b1.ball.IsCollide(b2.ball) )
             {
-                b1.ResolveCollision(b2);
+                b1.ball.ResolveCollision(b2.ball);
             }
         }
     }
-
+    Seek(player);
     m_enemyGotHit.Upadate(dt);
 }
 
-std::vector<Ball> &Enemies::GetEnemies()
+std::vector<Enemy> &Enemies::GetEnemies()
 {
     return m_enemies;
 }
@@ -74,18 +85,30 @@ void Enemies::Draw(sf::RenderWindow &window)
 {
     for(auto& b : m_enemies)
     {
-        b.Draw(window);
+        b.ball.Draw(window);
     }
     m_enemyGotHit.Draw(window);
 }
 
+void Enemies::Seek(const Ball& player)
+{
+    for(auto& b : m_enemies)
+    {
+       if(b.chasePlayer)
+       {
+           glm::vec2 desired_velocity = player.m_position - b.ball.m_position;
+           b.ball.m_velocity = glm::normalize(desired_velocity) * b.max_speed;
+       }
+    }
+}
+
 void Enemies::cleanUpDeadEnemies()
 {
-    auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [this](const Ball& self)
+    auto iter = remove_if(m_enemies.begin(), m_enemies.end(), [this](const Enemy& self)
     {
-        if(false == self.IsAlive())
+        if(false == self.ball.IsAlive())
         {
-            GetBinder().DispatchSignal("enemy_died", self.m_position.x, self.m_position.y);
+            GetBinder().DispatchSignal(Signal::Enemy::Died, self.ball.m_position.x, self.ball.m_position.y);
             return true;
         }
         return false;
@@ -93,24 +116,23 @@ void Enemies::cleanUpDeadEnemies()
     m_enemies.erase(iter, m_enemies.end());
 }
 
-bool Enemies::HandleSpawn(const Ball& self)
+bool Enemies::HandleSpawn(Enemy& enemy)
 {
-    //TODO - When Borko Becomes Imba - Make This Awesome
-    if( self.m_radius <= max_split_radius )
+    float chance = Random(0.0f, 100.0f)(rng);
+    if( chance <= enemy.chance_to_split && enemy.ball.m_radius >= 12.0f)
     {
-        return true;
+
+        SpawnEnemy(enemy.ball.m_position - glm::vec2(enemy.ball.m_radius/2, 0),
+                   enemy.ball.m_radius / 2, enemy.ball.m_maxHealth / 2, 0.0f);
+
+        SpawnEnemy(enemy.ball.m_position + glm::vec2(enemy.ball.m_radius/2, 0),
+                   enemy.ball.m_radius / 2, enemy.ball.m_maxHealth / 2, 0.0f);
     }
-
-    float maxR = max_split_radius;
-    float r = std::max(maxR, self.m_radius - 8.0f);
-
-    SpawnEnemy(self.m_position - glm::vec2(self.m_radius/2, 0), r);
-    SpawnEnemy(self.m_position + glm::vec2(self.m_radius/2, 0), r);
 
     return false;
 }
 
-void Enemies::SpawnEnemy(glm::vec2 pos, float r)
+void Enemies::SpawnEnemy(glm::vec2 pos, float r, int health, float chanceToSplit)
 {
     float speed = Random(3.0f, 6.0f)(rng);
     glm::vec2 centerPos = {Window::Playable::width / 2.0f, Window::Playable::height / 2.0f};
@@ -120,10 +142,16 @@ void Enemies::SpawnEnemy(glm::vec2 pos, float r)
 
     float radius = r;
 
-    Ball ball(pos, velocity, radius, radius * 10.0f);
-    ball.SetMaxHealth(health);
-
-    m_enemies.push_back(ball);
+    Enemy enemy;
+    enemy.chance_to_split = chanceToSplit;
+    enemy.ball.Init(pos, velocity, radius, radius * 10.0f);
+    enemy.ball.SetMaxHealth(health);
+    if( r > 25.0f )
+    {
+        enemy.ball.m_circle.setOutlineThickness(3.0f);
+        enemy.chasePlayer = true;
+    }
+    m_enemies.push_back(enemy);
 }
 
 void Enemies::SpawnEnemy()
@@ -150,6 +178,6 @@ void Enemies::SpawnEnemy()
         }break;
     }
     float radius = Random(15.0f, 30.0f)(rng);
-    SpawnEnemy(pos, radius);
+    SpawnEnemy(pos, radius, health, chance_to_split);
 }
 

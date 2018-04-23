@@ -12,6 +12,7 @@ public:
     void Draw(sf::RenderWindow& window) final override;
     void Show() final override;
     void Hide() final override;
+    void OnEvent(sf::Event event) final override;
 private:
     sf::RectangleShape rect;
     LevelUpMenu levelMenu;

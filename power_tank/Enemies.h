@@ -4,28 +4,35 @@
 #include "Ball.h"
 #include "EnemyGotHit.h"
 
+struct Enemy
+{
+    Ball ball;
+    float chance_to_split = 0.0f;
+    bool chasePlayer = false;
+    float max_speed = 2.5f;
+};
+
 class Enemies
 {
 public:
     void Init();
-    void Update(float dt);
-    std::vector<Ball>& GetEnemies();
+    void Update(float dt, const Ball& player);
+    std::vector<Enemy>& GetEnemies();
     void Draw(sf::RenderWindow& window);
 private:
+    void Seek(const Ball& player);
     EnemyGotHit m_enemyGotHit;
 
-    static constexpr int health = 1;
-    static constexpr int max_split_count = 3;
-    static constexpr float spawn_rate = 200.0f;
-    static constexpr float max_split_radius = 10.0f;
-
+    int health = 1;
+    int max_enemies_in_screen = 10;
     float spawn_elapsed = 0.0f;
-    int max_enemies = 30;
+    float spawn_rate = 300.0f;
+    float chance_to_split = 0.0f;
 
     void cleanUpDeadEnemies();
-    bool HandleSpawn(const Ball& self);
-    void SpawnEnemy(glm::vec2 pos, float r);
+    bool HandleSpawn(Enemy& self);
+    void SpawnEnemy(glm::vec2 pos, float r, int health, float chanceToSplit = 0.0f);
     void SpawnEnemy();
 
-    std::vector<Ball> m_enemies;
+    std::vector<Enemy> m_enemies;
 };

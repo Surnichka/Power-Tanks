@@ -8,6 +8,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 #include "editor/Editor.h"
+#include "SignalDefinitions.h"
 
 int main()
 {
@@ -29,12 +30,11 @@ int main()
         {
             ImGui::SFML::ProcessEvent(event);
             if(event.type == sf::Event::Closed)
-                window.close();
-
-            if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
             {
-                GetBinder().DispatchSignal("level_up");
+                window.close();
             }
+
+            gameApp.OnEvent(event);
 
             if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::F1)
             {
@@ -59,13 +59,13 @@ int main()
             }
 
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetBinder().DispatchSignal("player_move_left"); }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { GetBinder().DispatchSignal("player_move_right"); }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetBinder().DispatchSignal("player_move_up"); }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetBinder().DispatchSignal("player_move_down"); }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetBinder().DispatchSignal(Signal::Player::MoveLeft); }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { GetBinder().DispatchSignal(Signal::Player::MoveRight); }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetBinder().DispatchSignal(Signal::Player::MoveUp); }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetBinder().DispatchSignal(Signal::Player::MoveDown); }
 
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){ GetBinder().DispatchSignal("player_shoot"); }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){ GetBinder().DispatchSignal("player_shoot_supernova"); }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){ GetBinder().DispatchSignal(Signal::Player::Shoot); }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){ GetBinder().DispatchSignal(Signal::Player::ShootUltimate); }
 
         auto delta_time = deltaClock.restart();
         float dt = delta_time.asMilliseconds();

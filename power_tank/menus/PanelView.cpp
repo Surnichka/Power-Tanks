@@ -1,6 +1,7 @@
 #include "PanelView.h"
 #include "../libs/Binder/Binder.h"
 #include "../Window.h"
+#include "../SignalDefinitions.h"
 
 PanelView::PanelView()
 {
@@ -9,7 +10,7 @@ PanelView::PanelView()
         m_health = newHealth;
     });
 
-    GetBinder().ConnectSlot("enemy_died", [this]()
+    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
     {
         ++m_totalPoints;
     });
@@ -24,17 +25,17 @@ PanelView::PanelView()
         m_ultimate_cooldown = timeLeft;
     });
 
-    GetBinder().ConnectSlot("bullet_damage", [this](int bulletDmg)
+    GetBinder().ConnectSlot(Signal::Bullet::Damage, [this](int bulletDmg)
     {
         m_bullet_damage = bulletDmg;
     });
 
-    GetBinder().ConnectSlot("fire_rate", [this](int fire_rate)
+    GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](int fire_rate)
     {
         m_fire_rate = fire_rate;
     });
 
-    GetBinder().ConnectSlot("bullet_speed", [this](int bullet_speed)
+    GetBinder().ConnectSlot(Signal::Bullet::Speed, [this](int bullet_speed)
     {
         m_bullet_speed = bullet_speed;
     });
@@ -43,6 +44,11 @@ PanelView::PanelView()
     {
         m_pause = pause;
     });
+}
+
+void PanelView::Init()
+{
+
 }
 
 void PanelView::DrawStats(sf::RenderWindow &window)
@@ -122,4 +128,19 @@ void PanelView::setText(sf::Text& text, const sf::Color& color, const sf::Vector
 void PanelView::Draw(sf::RenderWindow &window)
 {
     DrawStats(window);
+}
+
+void PanelView::Update(float dt)
+{
+
+}
+
+void PanelView::Show()
+{
+
+}
+
+void PanelView::Hide()
+{
+
 }

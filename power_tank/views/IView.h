@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/Window/Event.hpp"
 class IView
 {
 public:
@@ -14,4 +15,5 @@ public:
     virtual void Draw(sf::RenderWindow& window) = 0;
     virtual void Show() = 0;
     virtual void Hide() = 0;
+    virtual void OnEvent(sf::Event) {}
 };

@@ -1,15 +1,19 @@
 #include "LevelCounter.h"
 #include "FontMgr.h"
+#include "../libs/Binder/Binder.h"
 #include "../Window.h"
+#include <math.h>
+#include <iostream>
 
 LevelCounter::LevelCounter()
 {
-    int expRate = expirienceRate;
+    float expRate = 5.0f;
     for(int i = 1; i <= maxLevel; i++)
     {
-        expirienceRequirements[i] = expRate;
+        expirienceRequirements[i] = std::ceil(expRate);
         expirienceGained[i] = 0;
-        expRate *= 2;
+        expRate *= expirienceRate;
+        expirienceRate = std::max(expirienceRate - 0.15f, 1.10f);
     }
 
     box.setSize({200, 20});
@@ -34,6 +38,7 @@ void LevelCounter::GainExp()
     if( exp >= expirienceRequirements.at(currentLevel) )
     {
         currentLevel++;
+        GetBinder().DispatchSignal("level_up", currentLevel);
         expirienceGained.at(currentLevel)++;
     }
 }

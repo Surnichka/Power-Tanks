@@ -1,6 +1,8 @@
 #include "LevelUpView.h"
 #include "../Window.h"
 #include "../utils/ResourceMgr.h"
+#include "../libs/Binder/Binder.h"
+#include "../SignalDefinitions.h"
 
 void LevelUpView::Init()
 {
@@ -28,4 +30,12 @@ void LevelUpView::Show()
 void LevelUpView::Hide()
 {
 
+}
+
+void LevelUpView::OnEvent(sf::Event event)
+{
+    if( event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+    {
+        GetBinder().DispatchSignal(Signal::View::RequestGamePlay);
+    }
 }

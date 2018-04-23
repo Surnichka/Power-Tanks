@@ -17,7 +17,8 @@ private:
     sf::RectangleShape box;
 
     int currentLevel = 1;
-    static const int expirienceRate = 2;
+    float expirienceRate = 2.0f;
+
     static const int maxLevel = 15;
     std::map<int, int> expirienceRequirements;
     std::map<int, int> expirienceGained;

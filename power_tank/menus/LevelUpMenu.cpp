@@ -13,28 +13,28 @@ void LevelUpMenu::InitResources()
     auto& resMgr = ResoruceMgr::Get();
     resMgr.InitLevelUpResources();
 
-    int yPos = 100;
-    sword.skillSprite = resMgr.GetSprite("sword");
-    sword.skillSprite.setPosition(200, yPos );
-    quiver.skillSprite = resMgr.GetSprite("quiver");
-    quiver.skillSprite.setPosition(500, yPos);
-    bullet.skillSprite = resMgr.GetSprite("bullet");
-    bullet.skillSprite.setPosition(800, yPos );
-    speed.skillSprite = resMgr.GetSprite("speed");
-    speed.skillSprite.setPosition(1100, yPos);
+    skillsContainer.resize(4);
+    skillsContainer[0].sprite = resMgr.GetSprite("sword");
+    skillsContainer[1].sprite = resMgr.GetSprite("quiver");
+    skillsContainer[2].sprite = resMgr.GetSprite("bullet");
+    skillsContainer[3].sprite = resMgr.GetSprite("speed");
+    skillsContainer[0].text.setString("DAMAGE");
+    skillsContainer[1].text.setString("ATTACK SPEED");
+    skillsContainer[2].text.setString("BULLET SPEED");
+    skillsContainer[3].text.setString("MOVE SPEED");
 
-    setText(sword.skillText);
-    sword.skillText.setString("DAMAGE");
-    sword.skillText.setPosition(200, yPos - 50);
-    setText(quiver.skillText);
-    quiver.skillText.setString("ATTACK SPEED");
-    quiver.skillText.setPosition(500, yPos - 50);
-    setText(bullet.skillText);
-    bullet.skillText.setString("BULLET SPEED");
-    bullet.skillText.setPosition(800, yPos - 50);
-    setText(speed.skillText);
-    speed.skillText.setString("MOVE SPEED");
-    speed.skillText.setPosition(1100, yPos - 50);
+    int yPos = 100;
+    int xPos = 200;
+    for (auto& vec : skillsContainer)
+    {
+        vec.sprite.setPosition(xPos, yPos);
+        vec.shape.setPosition(xPos - 20, yPos - 20);
+        vec.text.setPosition(xPos, yPos - 50);
+        setText(vec.text);
+
+        xPos += 300;
+    }
+    setShape();
 }
 
 void LevelUpMenu::setText(sf::Text& text, const sf::Color& color, const sf::Vector2f& scale)
@@ -46,20 +46,23 @@ void LevelUpMenu::setText(sf::Text& text, const sf::Color& color, const sf::Vect
     text.setFillColor(color);
 }
 
-void LevelUpMenu::Draw(sf::RenderWindow &window)
+void LevelUpMenu::setShape()
 {
-    auto& resMgr = ResoruceMgr::Get();
-    DrawSprites(window);
+    for (auto& vec : skillsContainer)
+    {
+        vec.shape.setSize({175,175});
+        vec.shape.setOutlineColor(sf::Color::Black);
+        vec.shape.setOutlineThickness(3);
+        vec.shape.setFillColor({255,255,255,0});
+    }
 }
 
-void LevelUpMenu::DrawSprites(sf::RenderWindow &window)
+void LevelUpMenu::Draw(sf::RenderWindow &window)
 {
-    window.draw(sword.skillSprite);
-    window.draw(sword.skillText);
-    window.draw(quiver.skillSprite);
-    window.draw(quiver.skillText);
-    window.draw(bullet.skillSprite);
-    window.draw(bullet.skillText);
-    window.draw(speed.skillSprite);
-    window.draw(speed.skillText);
+    for (const auto& vec : skillsContainer)
+    {
+        window.draw(vec.text);
+        window.draw(vec.sprite);
+        window.draw(vec.shape);
+    }
 }

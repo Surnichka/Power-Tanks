@@ -3,7 +3,7 @@
 #include "menus/DebugMenu.h"
 #include "libs/Binder/Binder.h"
 #include "cmath"
-
+#include "SignalDefinitions.h"
 #include "utils/ResourceMgr.h"
 
 void Player::Init()
@@ -12,7 +12,7 @@ void Player::Init()
 
     DebugMenu();
 
-    gun.Init(300.0f, 10.5f, 1);
+    gun.Init(/*700.0f, 7.0f, 1*/);
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
@@ -30,7 +30,6 @@ void Player::Init()
 
         elapsed_invulnaraibility_time = 0.0f;
         other.Destroy();
-        GetBinder().DispatchSignal("enemy_died", other.m_position.x, other.m_position.y);
 
         self.TakeLife(1);
         GetBinder().DispatchSignal("health_change", self.GetCurrentHealth());
@@ -57,7 +56,7 @@ void Player::Init()
     {
         gun.Ultimate();
     });
-    GetBinder().ConnectSlot("enemy_died", [this]()
+    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
     {
         lvlCount.GainExp();
     });

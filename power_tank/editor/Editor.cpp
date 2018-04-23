@@ -11,12 +11,12 @@ void ImGui::Editor::Proccess()
 //    bool demo = true;
 //    ImGui::ShowDemoWindow(&demo);
 
-    ImGui::Begin("Debug Menu");
-    if(ImGui::Button("AddSpeed"))
-    {
+//    ImGui::Begin("Debug Menu");
+//    if(ImGui::Button("AddSpeed"))
+//    {
         //DispatchSignal(AddSpeed, 10);
-    }
-    ImGui::End();
+//    }
+//    ImGui::End();
 
 //    //ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.65f);  // 2/3 of the space for widget and 1/3 for labels
 //    ImGui::PushItemWidth(-140);                               // Right align, keep 140 pixels for labels

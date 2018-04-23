@@ -3,6 +3,7 @@
 #include "../Gun.h"
 #include "../ShowBallInfo.h"
 #include "../libs/Binder/Binder.h"
+#include "../SignalDefinitions.h"
 
 void PowerTankView::Init()
 {
@@ -29,7 +30,7 @@ void PowerTankView::Init()
 
 void PowerTankView::Update(float dt)
 {
-    m_enemies.Update(dt);
+    m_enemies.Update(dt, m_player.GetPlayer());
     m_player.Update(dt);
 
     auto& player = m_player.GetPlayer();
@@ -37,17 +38,17 @@ void PowerTankView::Update(float dt)
 
     for(auto& enemy : enemies)
     {
-        if( player.IsCollide(enemy) )
+        if( player.IsCollide(enemy.ball) )
         {
-            player.ResolveCollision(enemy);
+            player.ResolveCollision(enemy.ball);
         }
 
         auto& player_bullets = m_player.GetGun().GetBullets();
         for(auto& bullet : player_bullets)
         {
-            if( bullet.IsCollide(enemy) )
+            if( bullet.IsCollide(enemy.ball) )
             {
-                bullet.ResolveCollision(enemy);
+                bullet.ResolveCollision(enemy.ball);
             }
         }
     }
@@ -58,7 +59,6 @@ void PowerTankView::Draw(sf::RenderWindow &window)
     for(const auto& line : m_background) { window.draw(line); }
     m_player.Draw(window);
     m_enemies.Draw(window);
-    m_panelView.Draw(window);
 }
 
 void PowerTankView::Show()
@@ -69,4 +69,12 @@ void PowerTankView::Show()
 void PowerTankView::Hide()
 {
 
+}
+
+void PowerTankView::OnEvent(sf::Event event)
+{
+    if( event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+    {
+        GetBinder().DispatchSignal(Signal::View::RequestLevelUp);
+    }
 }

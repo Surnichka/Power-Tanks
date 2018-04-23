@@ -3,10 +3,11 @@
 #include "SFML/Graphics/Text.hpp"
 #include "utils/FontMgr.h"
 #include "utils/Utils.hpp"
+#include "SignalDefinitions.h"
 
 EnemyGotHit::EnemyGotHit()
 {
-    GetBinder().ConnectSlot("enemy_got_hit", [this](int xPos, int yPos, int damage)
+    GetBinder().ConnectSlot(Signal::Enemy::GotHit, [this](int xPos, int yPos, int damage)
     {
         ShowInfo info;
         info.damage = std::to_string(damage);
@@ -14,7 +15,7 @@ EnemyGotHit::EnemyGotHit()
         info.yPos = yPos - 30;
         m_showInfo.push_back(info);
     });
-    GetBinder().ConnectSlot("enemy_died", [this](int xPos, int yPos)
+    GetBinder().ConnectSlot(Signal::Enemy::Died, [this](int xPos, int yPos)
     {
         m_particles.Emit({xPos, yPos});
     });

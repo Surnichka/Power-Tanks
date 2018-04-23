@@ -4,24 +4,31 @@
 #include "views/BoidsExampleView.h"
 #include "views/TestView.h"
 #include "libs/Binder/Binder.h"
+#include "menus/PanelView.h"
 #include "Window.h"
+#include "SignalDefinitions.h"
 
 void GameApp::Init()
 {
-//    m_views["main_menu_view"] = std::make_shared<MainMenuView>();
-    m_views["game_play_view"] = std::make_shared<PowerTankView>();
-    m_views["level_up_view"]  = std::make_shared<LevelUpView>();
-    m_views["boids_example_view"]   = std::make_shared<BoidsExampleView>();
-    m_views["test_view"] = std::make_shared<TestView>();
+    m_views[Views::GamePlay] = std::make_shared<PowerTankView>();
+    m_views[Views::LevelUp]  = std::make_shared<LevelUpView>();
+    m_views[Views::BoidsExample] = std::make_shared<BoidsExampleView>();
+    m_views[Views::Panel] = std::make_shared<PanelView>();
+    m_views[Views::Test] = std::make_shared<TestView>();
 
     for(auto& p : m_views)
     {
         p.second->Init();
     }
 
-    GetBinder().ConnectSlot("level_up", [this]()
+    GetBinder().ConnectSlot(Signal::View::RequestLevelUp, [this]()
     {
-        m_currentView = "level_up_view";
+        ChangeView({Views::LevelUp, Views::Panel});
+    });
+
+    GetBinder().ConnectSlot(Signal::View::RequestGamePlay, [this]()
+    {
+        ChangeView({Views::GamePlay, Views::Panel});
     });
 
     GetBinder().ConnectSlot("pause_game", [this]()
@@ -31,6 +38,14 @@ void GameApp::Init()
     });
 }
 
+void GameApp::OnEvent(sf::Event event)
+{
+    for(const auto& viewName : m_activeViews)
+    {
+        m_views.at(viewName)->OnEvent(event);
+    }
+}
+
 void GameApp::Update(float dt)
 {
     if (pause)
@@ -38,25 +53,31 @@ void GameApp::Update(float dt)
         return;
     }
 
-    m_views.at(m_currentView)->Update(dt);
+    for(const auto& viewName : m_activeViews)
+    {
+        m_views.at(viewName)->Update(dt);
+    }
 }
 
 void GameApp::Draw(sf::RenderWindow &window)
 {
-    m_views.at(m_currentView)->Draw(window);
+    for(const auto& viewName : m_activeViews)
+    {
+        m_views.at(viewName)->Draw(window);
+    }
 }
 
-void GameApp::ChangeView(const std::string &viewName)
+void GameApp::ChangeView(const std::vector<Views> &viewsName)
 {
-    auto iter = m_views.find(viewName);
-    if( iter == m_views.end() )
+    for(const auto& viewName : m_activeViews)
     {
-        return;
+        m_views.at(viewName)->Hide();
     }
 
-    auto view = m_views.at(m_currentView);
-    view->Hide();
+    m_activeViews = viewsName;
 
-    m_currentView = viewName;
-    m_views.at(m_currentView)->Show();
+    for(const auto& viewName : m_activeViews)
+    {
+        m_views.at(viewName)->Show();
+    }
 }

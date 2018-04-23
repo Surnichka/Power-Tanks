@@ -1,9 +1,10 @@
 #include "PlayerKillSound.h"
 #include "libs/Binder/Binder.h"
+#include "SignalDefinitions.h"
 
 void PlayerKillSound::Init()
 {
-    GetBinder().ConnectSlot("enemy_died", [this]()
+    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
     {
         {
             standard_counter++;
@@ -20,8 +21,8 @@ void PlayerKillSound::Init()
             auto iter = m_consecutiveKillSounds.find(consecutive_counter);
             if( iter != m_consecutiveKillSounds.end() )
             {
-                m_soundMgr.StopAll();
-                m_soundMgr.Play(iter->second);
+                //m_soundMgr.StopAll();
+                //m_soundMgr.Play(iter->second);
             }
         }
     });

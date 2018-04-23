@@ -1,13 +1,17 @@
 #pragma once
+#include "../views/IView.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "../utils/FontMgr.h"
 
-class PanelView
+class PanelView : public IView
 {
 public:
     PanelView();
     void Init();
     void Draw(sf::RenderWindow &window);
+    void Update(float dt) override;
+    void Show() override;
+    void Hide() override;
 private:
     void DrawStats(sf::RenderWindow &window);
     void setText(sf::Text& text,
