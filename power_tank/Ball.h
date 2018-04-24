@@ -23,7 +23,7 @@ public:
 
     bool IsAlive() const;
     void Destroy();
-    void TakeLife(int damage);
+    void TakeLife(float damage);
 
     void OnCollideOtherBall(OnCollisionFunc onColFunc);
     void OnWallCollide(OnWallHitFunc onWallHitFunc);

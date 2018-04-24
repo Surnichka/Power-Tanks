@@ -5,7 +5,7 @@
 class Gun
 {
 public:
-    void Init(/*float frameRate, float bulletSpeed, int damage*/);
+    void Init();
     void Shoot();
     void Ultimate();
     void Update(float dt);
@@ -17,13 +17,15 @@ private:
     void DebugMenu();
     void LookAtMousePos();
 
-    int bullet_damage = 1;
+    float bullet_damage = 1;
     float bullet_radius = 4.0f;
 
-    float last_shoot = 0.0f;
     float bullet_speed = 7.0f;
     float bullet_frame_rate = 700.0f;
+    float critical_chance = 10.0f;
+    float crit_damage = 2.3f;
 
+    float last_shoot = 0.0f;
     float ultimate_cooldown = 100.0f;
     float last_ultimate = ultimate_cooldown;
 

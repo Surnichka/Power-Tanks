@@ -12,7 +12,7 @@ void Player::Init()
 
     DebugMenu();
 
-    gun.Init(/*700.0f, 7.0f, 1*/);
+    gun.Init();
     float radius = 20;
     glm::vec2 centerPos = {Window::width / 2.0f, Window::height / 2.0f};
 
@@ -76,6 +76,7 @@ void Player::Update(float dt)
     gun.Update(dt);
     player.Update(dt);
     gun.setBarrelPositions(player.getCurrentPosition());
+    InputEvents();
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -120,6 +121,17 @@ void Player::DebugMenu()
         Player::speed--;
         GetBinder().DispatchSignal("move_speed",int(speed));
     });
+}
+
+void Player::InputEvents()
+{
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { GetBinder().DispatchSignal(Signal::Player::MoveLeft); }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { GetBinder().DispatchSignal(Signal::Player::MoveRight); }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetBinder().DispatchSignal(Signal::Player::MoveUp); }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetBinder().DispatchSignal(Signal::Player::MoveDown); }
+
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){ GetBinder().DispatchSignal(Signal::Player::Shoot); }
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){ GetBinder().DispatchSignal(Signal::Player::ShootUltimate); }
 }
 
 Gun &Player::GetGun()

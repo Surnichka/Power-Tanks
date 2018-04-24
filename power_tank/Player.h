@@ -20,6 +20,7 @@ public:
 private:
     bool IsInvulnarable();
     void DebugMenu();
+    void InputEvents();
     glm::vec2 Move();
 
     enum Direction

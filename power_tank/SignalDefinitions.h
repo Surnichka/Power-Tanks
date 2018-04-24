@@ -31,6 +31,7 @@ namespace Signal
 		static const std::string Shoot = "player_shoot";
 		static const std::string ShootUltimate = "player_shoot_supernova";
 		static const std::string MoveSpeed = "move_speed";
+		static const std::string LevelUp = "level_up";
 	}
 	static const std::string Pause = "pause_game";
 }

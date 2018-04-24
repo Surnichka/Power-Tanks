@@ -40,9 +40,9 @@ void Ball::Destroy()
     m_currentHealth = 0;
 }
 
-void Ball::TakeLife(int damage)
+void Ball::TakeLife(float damage)
 {
-    m_currentHealth = std::max(0, m_currentHealth - damage);
+    m_currentHealth = std::max(0.0f, m_currentHealth - damage);
 }
 
 void Ball::Update(float dt)

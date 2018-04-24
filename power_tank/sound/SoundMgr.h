@@ -17,5 +17,5 @@ private:
     };
 
     std::map<std::string, SoundInfo> m_sounds;
-    bool m_enableSound = true;
+    bool m_enableSound = false;
 };

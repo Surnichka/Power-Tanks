@@ -18,5 +18,4 @@ public:
 private:
     std::vector<Views> m_activeViews = {Views::GamePlay, Views::Panel};
     std::map<Views, IView::Ptr> m_views;
-    bool pause = false;
 };

@@ -6,7 +6,7 @@ class EnemyGotHit
 {
 public:
     EnemyGotHit();
-    void Upadate(float dt);
+    void Update(float dt);
     void Draw(sf::RenderWindow& window);
 
     bool showDeadAnimation = true;
@@ -17,6 +17,7 @@ private:
         int xPos = 0;
         int yPos = 0;
 
+        bool isCrit = false;
         std::string damage;
         float elapsed = 0.0f;
         float duration = 300.0f;

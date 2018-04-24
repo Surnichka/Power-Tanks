@@ -17,7 +17,7 @@ PanelView::PanelView()
 
     GetBinder().ConnectSlot("move_speed", [this](int speed)
     {
-        m_move_speed = speed;
+        m_move_speed += speed;
     });
 
     GetBinder().ConnectSlot("ultimate_cooldown", [this](int timeLeft)
@@ -27,17 +27,17 @@ PanelView::PanelView()
 
     GetBinder().ConnectSlot(Signal::Bullet::Damage, [this](int bulletDmg)
     {
-        m_bullet_damage = bulletDmg;
+        m_bullet_damage += bulletDmg;
     });
 
     GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](int fire_rate)
     {
-        m_fire_rate = fire_rate;
+        m_fire_rate += fire_rate;
     });
 
     GetBinder().ConnectSlot(Signal::Bullet::Speed, [this](int bullet_speed)
     {
-        m_bullet_speed = bullet_speed;
+        m_bullet_speed += bullet_speed;
     });
 
     GetBinder().ConnectSlot("draw_pause", [this](int pause)
@@ -141,6 +141,11 @@ void PanelView::Show()
 }
 
 void PanelView::Hide()
+{
+
+}
+
+void PanelView::OnStatsUpdate(msg::UniMsg msg)
 {
 
 }

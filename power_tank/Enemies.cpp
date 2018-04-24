@@ -16,8 +16,7 @@ namespace
 
 void Enemies::Init()
 {
-//    SpawnEnemy({250, 250}, 50);
-    GetBinder().ConnectSlot("level_up", [this](int currentLevel)
+    GetBinder().ConnectSlot(Signal::Player::LevelUp, [this](int currentLevel)
     {
         max_enemies_in_screen += 2;
         spawn_rate = std::max(250.0f, spawn_rate - 750);
@@ -73,7 +72,7 @@ void Enemies::Update(float dt, const Ball& player)
         }
     }
     Seek(player);
-    m_enemyGotHit.Upadate(dt);
+    m_enemyGotHit.Update(dt);
 }
 
 std::vector<Enemy> &Enemies::GetEnemies()

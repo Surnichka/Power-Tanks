@@ -4,15 +4,22 @@
 #include "utils/FontMgr.h"
 #include "utils/Utils.hpp"
 #include "SignalDefinitions.h"
+#include <iomanip>
+#include <sstream>
+
 
 EnemyGotHit::EnemyGotHit()
 {
-    GetBinder().ConnectSlot(Signal::Enemy::GotHit, [this](int xPos, int yPos, int damage)
+    GetBinder().ConnectSlot(Signal::Enemy::GotHit, [this](int xPos, int yPos, float damage, bool isCrit)
     {
+        std::stringstream stream;
+        stream << std::fixed << std::setprecision(1) << damage;
+
         ShowInfo info;
-        info.damage = std::to_string(damage);
+        info.damage = stream.str();
         info.xPos = xPos;
         info.yPos = yPos - 30;
+        info.isCrit = isCrit;
         m_showInfo.push_back(info);
     });
     GetBinder().ConnectSlot(Signal::Enemy::Died, [this](int xPos, int yPos)
@@ -21,7 +28,7 @@ EnemyGotHit::EnemyGotHit()
     });
 }
 
-void EnemyGotHit::Upadate(float dt)
+void EnemyGotHit::Update(float dt)
 {
     if(showDeadAnimation)
     {
@@ -68,11 +75,13 @@ void EnemyGotHit::Draw(sf::RenderWindow& window)
             sf::Text text;
             text.setPosition(info.xPos, info.yPos + info.offsetY);
             text.setString(info.damage);
-            text.setFillColor({255, 255, 255, alpha});
+            sf::Color color = info.isCrit ? sf::Color(255, 0, 0, alpha) : sf::Color(255, 255, 255, alpha);
+            float scale = info.isCrit ? 1.0f : 0.75f;
+            text.setFillColor(color);
             text.setOutlineColor({0, 0, 0, alpha});
             text.setOutlineThickness(2.5f);
             text.setFont(font);
-            text.setScale(0.75f, 0.75f);
+            text.setScale(scale, scale);
             window.draw(text);
         }
     }

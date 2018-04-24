@@ -5,12 +5,17 @@
 #include "SFML/Window/Mouse.hpp"
 #include "utils/Utils.hpp"
 #include "SignalDefinitions.h"
+#include <random>
 
-void Gun::Init(/*float frameRate, float bulletSpeed, int damage*/)
+namespace
 {
-//    bullet_damage = damage;
-//    bullet_speed = bulletSpeed;
-//    bullet_frame_rate = frameRate;
+    static std::random_device rd;
+    static std::default_random_engine rng(rd());
+    using Random = std::uniform_real_distribution<float>;
+}
+
+void Gun::Init()
+{
     GetBinder().DispatchSignal(Signal::Bullet::Damage,bullet_damage);
     GetBinder().DispatchSignal(Signal::Bullet::Speed,int(bullet_speed));
     GetBinder().DispatchSignal(Signal::Bullet::FireRate,int(bullet_frame_rate));
@@ -33,7 +38,7 @@ void Gun::Ultimate()
     last_ultimate = 0.0f;
 
     float step = 1.0f;
-    for(float theta = 0; theta < 360; theta += step)
+    for(float theta = 0; theta < 36; theta += step)
     {
         last_shoot = bullet_frame_rate;
         glm::vec2 dstPos;
@@ -76,10 +81,12 @@ void Gun::Shoot(glm::vec2 destPos)
 
     bullet.OnCollideOtherBall([this](Ball& self, Ball& other)
     {
+        bool isCrit = Random(0.0f, 100.0f)(rng) <= critical_chance;
+        float bullet_dmg = isCrit ? bullet_damage * crit_damage : bullet_damage;
         self.TakeLife(1);
-        other.TakeLife(bullet_damage);
+        other.TakeLife(bullet_dmg);
 
-        GetBinder().DispatchSignal(Signal::Enemy::GotHit, other.m_position.x, other.m_position.y, bullet_damage);
+        GetBinder().DispatchSignal(Signal::Enemy::GotHit, other.m_position.x, other.m_position.y, bullet_dmg, isCrit);
 
         float colorCoeff = utils::map<float>(other.m_currentHealth, 0, other.m_maxHealth, 0.0f, 1.0f);
         uint8_t c = uint8_t(255.0f * colorCoeff);
@@ -171,7 +178,7 @@ void Gun::DebugMenu()
     });
     debugMenu.AddButton("BULLET DMG -", [this]()
     {
-        Gun::bullet_damage = std::max(1, bullet_damage - 1);
+        Gun::bullet_damage = std::max(1.0f, bullet_damage - 1.0f);
         Gun::bullet_radius = std::max(4.0f, bullet_radius - 1.0f);
         GetBinder().DispatchSignal(Signal::Bullet::Damage,int(bullet_damage));
     });

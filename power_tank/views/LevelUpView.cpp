@@ -24,7 +24,7 @@ void LevelUpView::Draw(sf::RenderWindow &window)
 
 void LevelUpView::Show()
 {
-
+    levelMenu.RefreshColors();
 }
 
 void LevelUpView::Hide()
@@ -38,4 +38,5 @@ void LevelUpView::OnEvent(sf::Event event)
     {
         GetBinder().DispatchSignal(Signal::View::RequestGamePlay);
     }
+    levelMenu.HandlEvent(event);
 }

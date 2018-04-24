@@ -26,10 +26,26 @@ void PowerTankView::Init()
 
         m_background.emplace_back(std::move(rect));
     }
+
+    connectSignals();
+}
+
+void PowerTankView::connectSignals()
+{
+    GetBinder().ConnectSlot("pause_game", [this]()
+    {
+        pause = !pause;
+        GetBinder().DispatchSignal("draw_pause", pause);
+    });
 }
 
 void PowerTankView::Update(float dt)
 {
+    if (pause)
+    {
+        return;
+    }
+
     m_enemies.Update(dt, m_player.GetPlayer());
     m_player.Update(dt);
 
@@ -52,6 +68,7 @@ void PowerTankView::Update(float dt)
             }
         }
     }
+
 }
 
 void PowerTankView::Draw(sf::RenderWindow &window)
@@ -76,5 +93,13 @@ void PowerTankView::OnEvent(sf::Event event)
     if( event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
     {
         GetBinder().DispatchSignal(Signal::View::RequestLevelUp);
+    }
+    if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P)
+    {
+        GetBinder().DispatchSignal("pause_game");
+    }
+    if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::F1)
+    {
+        GetBinder().DispatchSignal("toggle_debug_menu");
     }
 }

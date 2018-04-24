@@ -30,12 +30,6 @@ void GameApp::Init()
     {
         ChangeView({Views::GamePlay, Views::Panel});
     });
-
-    GetBinder().ConnectSlot("pause_game", [this]()
-    {
-        pause = !pause;
-        GetBinder().DispatchSignal("draw_pause", pause);
-    });
 }
 
 void GameApp::OnEvent(sf::Event event)
@@ -48,11 +42,6 @@ void GameApp::OnEvent(sf::Event event)
 
 void GameApp::Update(float dt)
 {
-    if (pause)
-    {
-        return;
-    }
-
     for(const auto& viewName : m_activeViews)
     {
         m_views.at(viewName)->Update(dt);

@@ -14,9 +14,10 @@ DebugMenu::DebugMenu()
     GetBinder().ConnectSlot("toggle_debug_menu", [this]()
     {
         enabled = !enabled;
+        GetBinder().DispatchSignal("pause_game");
     });
 
-    GetBinder().ConnectSlot("button_pressed", [this](int mouseX, int mouseY)
+    GetBinder().ConnectSlot("left_button_pressed", [this](int mouseX, int mouseY)
     {
         HandleInput({mouseX, mouseY});
     });

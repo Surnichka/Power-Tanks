@@ -2,6 +2,7 @@
 #include "../views/IView.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "../utils/FontMgr.h"
+#include "../libs/GenericMsg/Msg.h"
 
 class PanelView : public IView
 {
@@ -12,6 +13,8 @@ public:
     void Update(float dt) override;
     void Show() override;
     void Hide() override;
+
+    void OnStatsUpdate(msg::UniMsg msg);
 private:
     void DrawStats(sf::RenderWindow &window);
     void setText(sf::Text& text,

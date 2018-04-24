@@ -4,6 +4,7 @@
 #include "../Window.h"
 #include <math.h>
 #include <iostream>
+#include "../SignalDefinitions.h"
 
 LevelCounter::LevelCounter()
 {
@@ -38,7 +39,7 @@ void LevelCounter::GainExp()
     if( exp >= expirienceRequirements.at(currentLevel) )
     {
         currentLevel++;
-        GetBinder().DispatchSignal("level_up", currentLevel);
+        GetBinder().DispatchSignal(Signal::Player::LevelUp, currentLevel);
         expirienceGained.at(currentLevel)++;
     }
 }

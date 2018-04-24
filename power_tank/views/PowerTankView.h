@@ -14,9 +14,12 @@ public:
     void Show() final override;
     void Hide() final override;
     void OnEvent(sf::Event event) final override;
+
+    void connectSignals();
 private:
     Player  m_player;
     Enemies m_enemies;
+    bool pause = false;
 
     std::vector<sf::RectangleShape> m_background;
 };
