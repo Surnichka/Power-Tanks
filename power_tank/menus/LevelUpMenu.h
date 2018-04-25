@@ -20,14 +20,14 @@ public:
     void RefreshColors();
 
 private:
-    void InitResources();
     void connectSignals();
     void setShape();
     void setText(sf::Text& text,
                  const sf::Color& color = sf::Color::Black,
                  const sf::Vector2f& scale = {0.7f,0.7f} );
 private:
-    int totalPoints = 0;
-    sf::Text levelPoints;
+    sf::Vector2i mouse;
+    int levelPoints = 0;
+    sf::Text levelPointsTxt;
     std::vector<PassiveSkillStruct> skillsContainer;
 };

@@ -1,37 +1,27 @@
 #pragma once
 #include "../views/IView.h"
-#include "SFML/Graphics/RenderWindow.hpp"
 #include "../utils/FontMgr.h"
-#include "../libs/GenericMsg/Msg.h"
+#include "SFML/Graphics/RenderWindow.hpp"
 
 class PanelView : public IView
 {
 public:
-    PanelView();
-    void Init();
-    void Draw(sf::RenderWindow &window);
-    void Update(float dt) override;
-    void Show() override;
-    void Hide() override;
+    void Draw(sf::RenderWindow &window) override;
+    void Refresh();
 
-    void OnStatsUpdate(msg::UniMsg msg);
+    //Not used for now
+    void Init() override{}
+    void Update(float) override{}
+    void Show() override{}
+    void Hide() override{}
 private:
-    void DrawStats(sf::RenderWindow &window);
-    void setText(sf::Text& text,
-                 const sf::Color& color = sf::Color::White,
-                 const sf::Vector2f& scale = {0.7f,0.7f} );
-    // PLAYER
+    void setText(sf::Text& text, const sf::Color& color = sf::Color::White, const sf::Vector2f& scale = {0.7f,0.7f} );
+
     int m_move_speed = 0;
     int m_health = 0;
-    int m_totalPoints = 0;
-    // GUN
+    int m_high_score_points = 0;
     int m_fire_rate = 0;
     int m_bullet_speed = 0;
     int m_bullet_damage = 0;
-    int m_ultimate_cooldown;
-    // ENEMY
-
-    //GAME STATE
-    bool m_pause = false;
-    float elapsedTime = 0.0f;
+    int m_ultimate_cooldown = 0;
 };

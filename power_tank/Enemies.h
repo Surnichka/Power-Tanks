@@ -26,7 +26,7 @@ private:
     int health = 1;
     int max_enemies_in_screen = 10;
     float spawn_elapsed = 0.0f;
-    float spawn_rate = 300.0f;
+    float spawn_rate = 100.0f;
     float chance_to_split = 0.0f;
 
     void cleanUpDeadEnemies();

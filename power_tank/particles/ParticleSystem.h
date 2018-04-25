@@ -24,10 +24,10 @@ private:
     bool m_fading = false;
 
     float m_particleRadius = 1.0f;
-    float m_duration = 400.0f;
-    float m_maxSpeed = 0.1f;
+    float m_duration = 200.0f;
+    float m_maxSpeed = 4.0f;
 
-    uint32_t m_fuel = 200;
+    uint32_t m_fuel = 400;
 
     static const uint32_t maxParticles = 4000;
     sf::CircleShape sfCircle;

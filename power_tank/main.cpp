@@ -9,6 +9,7 @@
 #include "imgui/imgui-SFML.h"
 #include "editor/Editor.h"
 #include "SignalDefinitions.h"
+#include "libs/Timer.h"
 
 int main()
 {
@@ -52,19 +53,20 @@ int main()
         }
         auto delta_time = deltaClock.restart();
         float dt = delta_time.asMilliseconds();
-//        ImGui::SFML::Update(window, delta_time);
 
         //Update metods
+        ImGui::SFML::Update(window, delta_time);
+        GetTimer().Process(dt);
         gameApp.Update(dt);
         //Draw metods
         gameApp.Draw(window);
         GetDebugMenu().Draw(window);
 
 //        ImGui::Editor::Proccess();
-//        ImGui::SFML::Render(window);
+        ImGui::SFML::Render(window);
         window.display();
     }
-//    ImGui::SFML::Shutdown();
+    ImGui::SFML::Shutdown();
 
     return 0;
 }

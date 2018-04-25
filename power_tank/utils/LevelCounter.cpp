@@ -1,10 +1,12 @@
 #include "LevelCounter.h"
 #include "FontMgr.h"
-#include "../libs/Binder/Binder.h"
 #include "../Window.h"
-#include <math.h>
-#include <iostream>
+#include "../PanelContext.h"
 #include "../SignalDefinitions.h"
+#include "../libs/Binder/Binder.h"
+#include "../libs/Timer.h"
+#include "../utils/Utils.hpp"
+#include <math.h>
 
 LevelCounter::LevelCounter()
 {
@@ -70,7 +72,45 @@ void LevelCounter::Draw(sf::RenderWindow &window)
     txtLvl.setString("Level: " + std::to_string(currentLevel));
     window.draw(txtLvl);
 
-    //2. Draw exp bar
+    //2. Draw available points
+    int levelPoints = 0;
+    GetPanelContext().GetValue("level_points", levelPoints );
+
+    static float elapsedForLevelPoints = 0.0f;
+
+    uint8_t alpha = 255;
+    if( levelPoints > 0 )
+    {
+        elapsedForLevelPoints += GetTimer().GetFrameTime();
+        static constexpr float levelPointDuration = 1000.0f;
+        if(elapsedForLevelPoints > levelPointDuration)
+        {
+            elapsedForLevelPoints = 0.0f;
+        }
+
+        if( elapsedForLevelPoints < levelPointDuration / 2)
+        {
+            alpha = uint8_t(utils::map<float>(elapsedForLevelPoints, 0.0f, levelPointDuration / 2, 255, 50));
+        }
+        else
+        {
+            alpha = uint8_t(utils::map<float>(elapsedForLevelPoints, levelPointDuration / 2, levelPointDuration, 50, 255));
+        }
+    }
+    else
+    {
+        elapsedForLevelPoints = 0.0f;
+    }
+
+    sf::Text txtAvailablePoints;
+    txtAvailablePoints.setPosition(pos.x + 13, pos.y + 20);
+    txtAvailablePoints.setFont(font);
+    txtAvailablePoints.setScale(0.7f,0.7f);
+    txtAvailablePoints.setFillColor({255, 153, 0, alpha});
+    txtAvailablePoints.setString("avaliable points: " + std::to_string(levelPoints));
+    window.draw(txtAvailablePoints);
+
+    //3. Draw exp bar
     if( currentLevel == maxLevel )
     {
         box.setFillColor({204, 102, 0});

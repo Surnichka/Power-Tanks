@@ -1,57 +1,20 @@
 #include "LevelUpMenu.h"
-#include "../utils/ResourceMgr.h"
 #include "../Window.h"
-#include "../libs/Binder/Binder.h"
+#include "../PanelContext.h"
 #include "../SignalDefinitions.h"
+#include "../utils/ResourceMgr.h"
+#include "../libs/Binder/Binder.h"
+#include "../PanelContext.h"
+#include <iostream>
 
 void LevelUpMenu::Init()
-{
-    InitResources();
-}
-
-void LevelUpMenu::HandlEvent(sf::Event event)
-{
-    if( totalPoints == 0 )
-    {
-        return;
-    }
-
-    sf::Color defaultColor = totalPoints == 0 ? sf::Color::Red : sf::Color(170, 170, 170);
-    for(auto& box : skillsContainer)
-    {
-        box.sprite.setScale(1.0f, 1.0f);
-        box.shape.setFillColor(defaultColor);
-
-        if(event.type == sf::Event::MouseMoved )
-        {
-            if(box.shape.getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y))
-            {
-                box.shape.setFillColor(sf::Color::Green);
-            }
-        }
-        else if(event.type == sf::Event::MouseButtonReleased && sf::Mouse::Button::Left)
-        {
-            totalPoints--;
-            if( nullptr == box.sendOnUpdate )
-            {
-                box.sendOnUpdate();
-            }
-            if( totalPoints == 0 )
-            {
-                return;
-            }
-        }
-    }
-}
-
-void LevelUpMenu::InitResources()
 {
     auto& resMgr = ResoruceMgr::Get();
     resMgr.InitLevelUpResources();
 
-    levelPoints.setString("TOTAL POINTS: " + std::to_string(totalPoints));
-    levelPoints.setPosition({600,500});
-    setText(levelPoints, sf::Color::Black, {1.0f,1.0f});
+    levelPointsTxt.setString("LEVEL POINTS: " + std::to_string(levelPoints));
+    levelPointsTxt.setPosition({600,500});
+    setText(levelPointsTxt, sf::Color::Black, {1.0f,1.0f});
 
     skillsContainer.resize(4);
     skillsContainer[0].sprite = resMgr.GetSprite("sword");
@@ -65,8 +28,8 @@ void LevelUpMenu::InitResources()
     skillsContainer[3].skillText.setString("MOVE SPEED");
 
     skillsContainer[0].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Bullet::Damage, 1.0f); };
-    skillsContainer[1].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Bullet::Speed, 1.0f); };
-    skillsContainer[2].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Bullet::FireRate, 1.0f); };
+    skillsContainer[1].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Bullet::FireRate, -50.0f); };
+    skillsContainer[2].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Bullet::Speed, 1.0f); };
     skillsContainer[3].sendOnUpdate = [](){ GetBinder().DispatchSignal(Signal::Player::MoveSpeed, 1.0f); };
 
     int yPos = 100;
@@ -80,6 +43,8 @@ void LevelUpMenu::InitResources()
         xPos += 300;
     }
     setShape();
+
+    GetPanelContext().AddValue("level_points", levelPoints);
     connectSignals();
 }
 
@@ -87,9 +52,53 @@ void LevelUpMenu::connectSignals()
 {
     GetBinder().ConnectSlot(Signal::Player::LevelUp, [this]()
     {
-        totalPoints++;
-        levelPoints.setString("TOTAL POINTS: " + std::to_string(totalPoints));
+        levelPoints++;
+        GetPanelContext().AddValue("level_points", levelPoints);
+        levelPointsTxt.setString("LEVEL POINTS: " + std::to_string(levelPoints));
     });
+}
+
+void LevelUpMenu::HandlEvent(sf::Event event)
+{
+    if( levelPoints == 0 )
+    {
+        return;
+    }
+
+    for(auto& box : skillsContainer)
+    {
+        box.sprite.setScale(1.0f, 1.0f);
+        if(box.shape.getGlobalBounds().contains(mouse.x, mouse.y))
+        {
+            box.shape.setFillColor(sf::Color::Green);
+        }
+        else
+        {
+            box.shape.setFillColor({170,170,170});
+        }
+
+        if(box.shape.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+        {
+            if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left)
+            {
+                box.sprite.setScale(1.2f, 1.2f);
+            }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left)
+            {
+                levelPoints--;
+                GetPanelContext().AddValue("level_points", levelPoints);
+                levelPointsTxt.setString("LEVEL POINTS: " + std::to_string(levelPoints));
+                if( nullptr != box.sendOnUpdate )
+                {
+                    box.sendOnUpdate();
+                }
+            }
+        }
+    }
+    if( levelPoints == 0 )
+    {
+        RefreshColors();
+    }
 }
 
 void LevelUpMenu::setText(sf::Text& text, const sf::Color& color, const sf::Vector2f& scale)
@@ -103,7 +112,7 @@ void LevelUpMenu::setText(sf::Text& text, const sf::Color& color, const sf::Vect
 
 void LevelUpMenu::RefreshColors()
 {
-    sf::Color defaultColor = totalPoints == 0 ? sf::Color::Red : sf::Color(170, 170, 170);
+    sf::Color defaultColor = levelPoints == 0 ? sf::Color::Red : sf::Color(170, 170, 170);
     for(auto& box : skillsContainer)
     {
         box.sprite.setScale(1.0f, 1.0f);
@@ -124,11 +133,12 @@ void LevelUpMenu::setShape()
 
 void LevelUpMenu::Draw(sf::RenderWindow &window)
 {
+    mouse = sf::Mouse::getPosition(window);
     for (auto& vec : skillsContainer)
     {
         window.draw(vec.skillText);
         window.draw(vec.shape);
         window.draw(vec.sprite);
     }
-    window.draw(levelPoints);
+    window.draw(levelPointsTxt);
 }

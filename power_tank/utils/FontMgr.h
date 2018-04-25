@@ -19,4 +19,3 @@ public:
 private:
     std::map<std::string, sf::Font> fonts;
 };
-

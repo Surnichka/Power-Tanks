@@ -1,58 +1,23 @@
 #include "PanelView.h"
-#include "../libs/Binder/Binder.h"
 #include "../Window.h"
+#include "../PanelContext.h"
 #include "../SignalDefinitions.h"
+#include "../libs/Binder/Binder.h"
+#include "../libs/GenericMsg/Msg.h"
 
-PanelView::PanelView()
+void PanelView::setText(sf::Text& text, const sf::Color& color, const sf::Vector2f& scale)
 {
-    GetBinder().ConnectSlot("health_change", [this](int newHealth)
-    {
-        m_health = newHealth;
-    });
+    auto& font = FontMgr::Get().GetFont();
 
-    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
-    {
-        ++m_totalPoints;
-    });
-
-    GetBinder().ConnectSlot("move_speed", [this](int speed)
-    {
-        m_move_speed += speed;
-    });
-
-    GetBinder().ConnectSlot("ultimate_cooldown", [this](int timeLeft)
-    {
-        m_ultimate_cooldown = timeLeft;
-    });
-
-    GetBinder().ConnectSlot(Signal::Bullet::Damage, [this](int bulletDmg)
-    {
-        m_bullet_damage += bulletDmg;
-    });
-
-    GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](int fire_rate)
-    {
-        m_fire_rate += fire_rate;
-    });
-
-    GetBinder().ConnectSlot(Signal::Bullet::Speed, [this](int bullet_speed)
-    {
-        m_bullet_speed += bullet_speed;
-    });
-
-    GetBinder().ConnectSlot("draw_pause", [this](int pause)
-    {
-        m_pause = pause;
-    });
+    text.setScale(scale);
+    text.setFont(font);
+    text.setFillColor(color);
 }
 
-void PanelView::Init()
+void PanelView::Draw(sf::RenderWindow &window)
 {
+    Refresh();
 
-}
-
-void PanelView::DrawStats(sf::RenderWindow &window)
-{
     // PLAYER
     sf::Text txtHealth;
     setText(txtHealth,{220, 0, 0});
@@ -62,7 +27,7 @@ void PanelView::DrawStats(sf::RenderWindow &window)
 
     sf::Text txtPoints;
     setText(txtPoints,{0, 153, 255});
-    txtPoints.setString("POINTS: " + std::to_string(m_totalPoints));
+    txtPoints.setString("POINTS: " + std::to_string(m_high_score_points));
     txtPoints.setPosition(Window::width / 2 - 110, Window::height - 40);
     window.draw(txtPoints);
 
@@ -101,51 +66,23 @@ void PanelView::DrawStats(sf::RenderWindow &window)
         ultimate = "READY!";
     }
     else
+    {
         ultimate = std::to_string(m_ultimate_cooldown);
+    }
+
     txtUltimate.setString("ULTIMATE CD: " + ultimate);
     txtUltimate.setPosition(Window::width / 2 + 300, Window::height - 65);
     window.draw(txtUltimate);
-
-    sf::Text txtPause;
-    setText(txtPause,sf::Color::Red,{4.0f,3.0f});
-    txtPause.setString("PAUSE");
-    txtPause.setPosition(Window::width / 2 - 200 ,Window::height / 2 - 200);
-    if(m_pause)
-    {
-        window.draw(txtPause);
-    }
 }
 
-void PanelView::setText(sf::Text& text, const sf::Color& color, const sf::Vector2f& scale)
+
+void PanelView::Refresh()
 {
-    auto& font = FontMgr::Get().GetFont();
-
-    text.setScale(scale);
-    text.setFont(font);
-    text.setFillColor(color);
-}
-
-void PanelView::Draw(sf::RenderWindow &window)
-{
-    DrawStats(window);
-}
-
-void PanelView::Update(float dt)
-{
-
-}
-
-void PanelView::Show()
-{
-
-}
-
-void PanelView::Hide()
-{
-
-}
-
-void PanelView::OnStatsUpdate(msg::UniMsg msg)
-{
-
+    GetPanelContext().GetValue("move_speed", m_move_speed);
+    GetPanelContext().GetValue("health", m_health);
+    GetPanelContext().GetValue("high_score_points", m_high_score_points);
+    GetPanelContext().GetValue("bullet_fire_rate", m_fire_rate);
+    GetPanelContext().GetValue("bullet_speed", m_bullet_speed);
+    GetPanelContext().GetValue("bullet_damage", m_bullet_damage);
+    GetPanelContext().GetValue("ultimate_cooldown", m_ultimate_cooldown);
 }

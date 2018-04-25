@@ -105,7 +105,7 @@ void ParticleSystem::CreateParticle(sf::Vector2i pos, uint32_t idxPos)
     m_particles[idxPos].position.x = pos.x;
     m_particles[idxPos].position.y = pos.y;
 
-    auto imba_random = [this, idxPos]()
+    auto imba_random = [this]()
     {
         if( Random(-m_maxSpeed, m_maxSpeed)(rng) < Random(-m_maxSpeed, m_maxSpeed)(rng) )
         {
@@ -118,8 +118,13 @@ void ParticleSystem::CreateParticle(sf::Vector2i pos, uint32_t idxPos)
         }
     };
 
+    auto some_random = [this, idxPos]()
+    {
+        return Random(-m_maxSpeed/Random(-m_maxSpeed, m_maxSpeed)(rng), m_maxSpeed/-m_maxSpeed)(rng);
+    };
+
     m_particles[idxPos].velocity.x = imba_random();
-    m_particles[idxPos].velocity.y = imba_random();
+    m_particles[idxPos].velocity.y = some_random();
 
 
     m_particles[idxPos].alive = true;

@@ -20,7 +20,7 @@ void Enemies::Init()
     {
         max_enemies_in_screen += 2;
         spawn_rate = std::max(250.0f, spawn_rate - 750);
-        health++;
+        health += 2;
         if( currentLevel == 3 )
         {
             chance_to_split = 50.0f;

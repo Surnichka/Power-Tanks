@@ -5,6 +5,7 @@
 #include "cmath"
 #include "SignalDefinitions.h"
 #include "utils/ResourceMgr.h"
+#include "PanelContext.h"
 
 void Player::Init()
 {
@@ -20,7 +21,7 @@ void Player::Init()
     gun.setBarrelPositions(player.getCurrentPosition());
     player.m_circle.setFillColor({92, 97, 112});
     player.SetMaxHealth(10);
-    GetBinder().DispatchSignal("health_change", player.GetCurrentHealth());
+
     player.OnCollideOtherBall([&](Ball& self, Ball& other)
     {
         if( IsInvulnarable() )
@@ -32,7 +33,8 @@ void Player::Init()
         other.Destroy();
 
         self.TakeLife(1);
-        GetBinder().DispatchSignal("health_change", self.GetCurrentHealth());
+        GetPanelContext().AddValue("health", self.GetCurrentHealth());
+
         if( false == self.IsAlive() )
         {
             self.m_circle.setFillColor(sf::Color::Red);
@@ -43,23 +45,10 @@ void Player::Init()
     playerCenter.x = centerPos.x + radius;
     playerCenter.y = centerPos.y + radius;
 
-    GetBinder().DispatchSignal("move_speed",int(speed));
-    GetBinder().ConnectSlot("player_move_right", [this]() { direction |= Direction::Right; });
-    GetBinder().ConnectSlot("player_move_left", [this]() { direction |= Direction::Left; });
-    GetBinder().ConnectSlot("player_move_up", [this]() { direction |= Direction::Up; });
-    GetBinder().ConnectSlot("player_move_down", [this]() { direction |= Direction::Down; });
-    GetBinder().ConnectSlot("player_shoot", [this]()
-    {
-        gun.Shoot();
-    });
-    GetBinder().ConnectSlot("player_shoot_supernova", [this]()
-    {
-        gun.Ultimate();
-    });
-    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
-    {
-        lvlCount.GainExp();
-    });
+    connectSignals();
+
+    GetPanelContext().AddValue("move_speed", speed);
+    GetPanelContext().AddValue("health", player.GetCurrentHealth());
 }
 
 void Player::Update(float dt)
@@ -102,25 +91,29 @@ Ball &Player::GetPlayer()
     return player;
 }
 
+void Player::connectSignals()
+{
+    GetBinder().ConnectSlot("player_move_right", [this]() { direction |= Direction::Right; });
+    GetBinder().ConnectSlot("player_move_left", [this]() { direction |= Direction::Left; });
+    GetBinder().ConnectSlot("player_move_up", [this]() { direction |= Direction::Up; });
+    GetBinder().ConnectSlot("player_move_down", [this]() { direction |= Direction::Down; });
+    GetBinder().ConnectSlot("player_shoot", [this]() { gun.Shoot(); });
+    GetBinder().ConnectSlot("player_shoot_supernova", [this](){ gun.Ultimate(); });
+    GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
+    {
+        lvlCount.GainExp();
+        GetPanelContext().AddValue("high_score_points", ++m_highScorePoints);
+    });
+    GetBinder().ConnectSlot(Signal::Player::MoveSpeed, [this](float value)
+    {
+        speed += value;
+        GetPanelContext().AddValue("move_speed", speed);
+    });
+}
+
 bool Player::IsInvulnarable()
 {
     return elapsed_invulnaraibility_time < invulnarabilityDuration;
-}
-
-void Player::DebugMenu()
-{
-    auto& debugMenu = GetDebugMenu();
-    debugMenu.AddButton("MOVE SPEED +", [this]()
-    {
-        Player::speed++;
-        GetBinder().DispatchSignal("move_speed",int(speed));
-    });
-
-    debugMenu.AddButton("MOVE SPEED -", [this]()
-    {
-        Player::speed--;
-        GetBinder().DispatchSignal("move_speed",int(speed));
-    });
 }
 
 void Player::InputEvents()
@@ -130,7 +123,7 @@ void Player::InputEvents()
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { GetBinder().DispatchSignal(Signal::Player::MoveUp); }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { GetBinder().DispatchSignal(Signal::Player::MoveDown); }
 
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){ GetBinder().DispatchSignal(Signal::Player::Shoot); }
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) { GetBinder().DispatchSignal(Signal::Player::Shoot); }
     if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){ GetBinder().DispatchSignal(Signal::Player::ShootUltimate); }
 }
 

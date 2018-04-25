@@ -18,8 +18,8 @@ public:
     Gun& GetGun();
     Ball& GetPlayer();
 private:
+    void connectSignals();
     bool IsInvulnarable();
-    void DebugMenu();
     void InputEvents();
     glm::vec2 Move();
 
@@ -33,6 +33,7 @@ private:
     Gun gun;
     Ball player;
     LevelCounter lvlCount;
+    int m_highScorePoints = 0;
 
     int direction = Direction::None;
 
