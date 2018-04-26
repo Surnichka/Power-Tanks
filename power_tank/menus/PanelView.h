@@ -17,11 +17,14 @@ public:
 private:
     void setText(sf::Text& text, const sf::Color& color = sf::Color::White, const sf::Vector2f& scale = {0.7f,0.7f} );
 
-    int m_move_speed = 0;
-    int m_health = 0;
-    int m_high_score_points = 0;
+    // GUN
+//    int m_move_speed = 0;
     int m_fire_rate = 0;
-    int m_bullet_speed = 0;
-    int m_bullet_damage = 0;
+    float m_bullet_damage = 0.0f;
+    int m_crit_chance = 0;
+    float m_crit_dmg = 0;
+
+    float m_health = 0;
     int m_ultimate_cooldown = 0;
+    int m_high_score_points = 0;
 };

@@ -20,7 +20,7 @@ void Player::Init()
     player.Init(centerPos, {}, radius, radius);
     gun.setBarrelPositions(player.getCurrentPosition());
     player.m_circle.setFillColor({92, 97, 112});
-    player.SetMaxHealth(10);
+    player.SetMaxHealth(10.0f);
 
     player.OnCollideOtherBall([&](Ball& self, Ball& other)
     {
@@ -102,12 +102,19 @@ void Player::connectSignals()
     GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
     {
         lvlCount.GainExp();
+        GetPanelContext().AddValue("health", player.GetCurrentHealth());
         GetPanelContext().AddValue("high_score_points", ++m_highScorePoints);
+        if(lifeSteal)
+            player.lifeSteal(0.1f);
     });
     GetBinder().ConnectSlot(Signal::Player::MoveSpeed, [this](float value)
     {
         speed += value;
         GetPanelContext().AddValue("move_speed", speed);
+    });
+    GetBinder().ConnectSlot("life_steal", [this](bool life)
+    {
+        lifeSteal = life;
     });
 }
 

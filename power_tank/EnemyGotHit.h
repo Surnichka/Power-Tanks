@@ -20,8 +20,8 @@ private:
         bool isCrit = false;
         std::string damage;
         float elapsed = 0.0f;
-        float duration = 300.0f;
-        float fadingStart = 150.0f;
+        float duration = 700.0f;
+        float fadingStart = 400.0f;
 
         int offsetY = 0;
         int desiredOffset = -50;

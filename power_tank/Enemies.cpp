@@ -19,11 +19,30 @@ void Enemies::Init()
     GetBinder().ConnectSlot(Signal::Player::LevelUp, [this](int currentLevel)
     {
         max_enemies_in_screen += 2;
-        spawn_rate = std::max(250.0f, spawn_rate - 750);
-        health += 2;
+        spawn_rate = std::max(250.0f, spawn_rate - 250);
+        health += 1;
         if( currentLevel == 3 )
         {
+            chase_player--;
+            chance_to_split = 25.0f;
+        }
+        if ( currentLevel == 5)
+        {
+            health += 1;
+            chase_player--;
             chance_to_split = 50.0f;
+        }
+        if ( currentLevel == 8)
+        {
+            health += 1;
+            chase_player--;
+            chance_to_split = 75.0f;
+        }
+        if ( currentLevel == 10)
+        {
+            health += 1;
+            chase_player--;
+            chance_to_split = 100.0f;
         }
     });
 }
@@ -122,10 +141,10 @@ bool Enemies::HandleSpawn(Enemy& enemy)
     {
 
         SpawnEnemy(enemy.ball.m_position - glm::vec2(enemy.ball.m_radius/2, 0),
-                   enemy.ball.m_radius / 2, enemy.ball.m_maxHealth / 2, 0.0f);
+                   enemy.ball.m_radius / 1.2f, enemy.ball.m_maxHealth / 2, 0.0f);
 
         SpawnEnemy(enemy.ball.m_position + glm::vec2(enemy.ball.m_radius/2, 0),
-                   enemy.ball.m_radius / 2, enemy.ball.m_maxHealth / 2, 0.0f);
+                   enemy.ball.m_radius / 1.2f, enemy.ball.m_maxHealth / 2, 0.0f);
     }
 
     return false;
@@ -145,7 +164,7 @@ void Enemies::SpawnEnemy(glm::vec2 pos, float r, int health, float chanceToSplit
     enemy.chance_to_split = chanceToSplit;
     enemy.ball.Init(pos, velocity, radius, radius * 10.0f);
     enemy.ball.SetMaxHealth(health);
-    if( r > 25.0f )
+    if( r >= chase_player )
     {
         enemy.ball.m_circle.setOutlineThickness(3.0f);
         enemy.chasePlayer = true;
@@ -176,7 +195,7 @@ void Enemies::SpawnEnemy()
              pos.y = Random(-50, - 150)(rng);
         }break;
     }
-    float radius = Random(15.0f, 30.0f)(rng);
+    float radius = Random(26.0f, 30.0f)(rng);
     SpawnEnemy(pos, radius, health, chance_to_split);
 }
 

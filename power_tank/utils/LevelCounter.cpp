@@ -16,7 +16,7 @@ LevelCounter::LevelCounter()
         expirienceRequirements[i] = std::ceil(expRate);
         expirienceGained[i] = 0;
         expRate *= expirienceRate;
-        expirienceRate = std::max(expirienceRate - 0.15f, 1.10f);
+        expirienceRate = std::max(expirienceRate - 0.25f, 1.10f);
     }
 
     box.setSize({200, 20});

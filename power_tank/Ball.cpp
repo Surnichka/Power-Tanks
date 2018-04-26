@@ -138,7 +138,7 @@ void Ball::ResolveCollision(Ball &other)
 
 bool Ball::IsAlive() const
 {
-    return m_currentHealth != 0;
+    return m_currentHealth != 0.0f;
 }
 
 void Ball::OnWallCollide(Ball::OnWallHitFunc onWallHitFunc)
@@ -146,13 +146,23 @@ void Ball::OnWallCollide(Ball::OnWallHitFunc onWallHitFunc)
     m_onWallHit = onWallHitFunc;
 }
 
-void Ball::SetMaxHealth(int health)
+void Ball::SetMaxHealth(float health)
 {
     m_maxHealth = health;
     m_currentHealth = health;
 }
 
-int Ball::GetCurrentHealth()
+void Ball::lifeSteal(float health)
+{
+    if (m_currentHealth >= 10.0f)
+    {
+        return;
+    }
+
+    m_currentHealth += health;
+}
+
+float Ball::GetCurrentHealth()
 {
     return m_currentHealth;
 }

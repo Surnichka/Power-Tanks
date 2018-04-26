@@ -20,6 +20,7 @@ namespace Signal
 	    static const std::string Damage = "bullet_damage";
 		static const std::string Speed = "bullet_speed";
 		static const std::string FireRate = "fire_rate";
+        static const std::string Critical = "critical_hit";
 	}
 
 	namespace Player

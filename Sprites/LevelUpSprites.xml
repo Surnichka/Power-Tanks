@@ -4,5 +4,7 @@
 	<SubTexture name="bullet" path="../Sprites/bullet.png"/>
 	<SubTexture name="archery" path="../Sprites/archery.png"/>
 	<SubTexture name="speed" path="../Sprites/speed.png"/>
+    <SubTexture name="critHit" path="../Sprites/critHit.png"/>
 	<SubTexture name="plus" path="../Sprites/plus.png"/>
+    <SubTexture name="lifesteal" path="../Sprites/lifesteal.png"/>
 </TextureAtlas>

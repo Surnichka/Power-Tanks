@@ -4,6 +4,8 @@
 #include "../SignalDefinitions.h"
 #include "../libs/Binder/Binder.h"
 #include "../libs/GenericMsg/Msg.h"
+#include <iomanip>
+#include <sstream>
 
 void PanelView::setText(sf::Text& text, const sf::Color& color, const sf::Vector2f& scale)
 {
@@ -21,7 +23,9 @@ void PanelView::Draw(sf::RenderWindow &window)
     // PLAYER
     sf::Text txtHealth;
     setText(txtHealth,{220, 0, 0});
-    txtHealth.setString("HEALTH: " + std::to_string(m_health));
+    std::stringstream healthStream;
+    healthStream << std::fixed << std::setprecision(1) << m_health;
+    txtHealth.setString("HEALTH: " + healthStream.str());
     txtHealth.setPosition(Window::width / 2 - 110, Window::height - 90);
     window.draw(txtHealth);
 
@@ -32,29 +36,33 @@ void PanelView::Draw(sf::RenderWindow &window)
     window.draw(txtPoints);
 
     int xGunPos = 50;
-    sf::Text txtSpeed;
-    setText(txtSpeed);
-    txtSpeed.setString("MOVE SPEED: " + std::to_string(m_move_speed));
-    txtSpeed.setPosition(xGunPos + 280, Window::height - 90);
-    window.draw(txtSpeed);
+    sf::Text txtCritChance;
+    setText(txtCritChance);
+    txtCritChance.setString("CRIT CHANCE: " + std::to_string(m_crit_chance) + "%");
+    txtCritChance.setPosition(xGunPos + 270, Window::height - 90);
+    window.draw(txtCritChance);
+
+    sf::Text txtCritDmg;
+    setText(txtCritDmg);
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(1) << m_crit_dmg;
+    txtCritDmg.setString("CRIT DAMAGE: x" + stream.str());
+    txtCritDmg.setPosition(xGunPos + 270, Window::height - 40);
+    window.draw(txtCritDmg);
 
     // GUN
     sf::Text txtBulletDmg;
     setText(txtBulletDmg);
-    txtBulletDmg.setString("BULLET DAMAGE: " + std::to_string(m_bullet_damage));
-    txtBulletDmg.setPosition(xGunPos, Window::height - 40);
+    std::stringstream streamDmg;
+    streamDmg << std::fixed << std::setprecision(1) << m_bullet_damage;
+    txtBulletDmg.setString("BULLET DAMAGE: " + streamDmg.str());
+    txtBulletDmg.setPosition(xGunPos, Window::height - 90);
     window.draw(txtBulletDmg);
-
-    sf::Text txtBulletSpeed;
-    setText(txtBulletSpeed);
-    txtBulletSpeed.setString("BULLET SPEED: " + std::to_string(m_bullet_speed));
-    txtBulletSpeed.setPosition(xGunPos, Window::height - 90);
-    window.draw(txtBulletSpeed);
 
     sf::Text txtFireRate;
     setText(txtFireRate);
     txtFireRate.setString("FIRE RATE: 0." + std::to_string(m_fire_rate));
-    txtFireRate.setPosition(xGunPos + 280, Window::height - 40);
+    txtFireRate.setPosition(xGunPos, Window::height - 40);
     window.draw(txtFireRate);
 
     std::string ultimate;
@@ -75,14 +83,14 @@ void PanelView::Draw(sf::RenderWindow &window)
     window.draw(txtUltimate);
 }
 
-
 void PanelView::Refresh()
 {
-    GetPanelContext().GetValue("move_speed", m_move_speed);
+//    GetPanelContext().GetValue("move_speed", m_move_speed);
     GetPanelContext().GetValue("health", m_health);
     GetPanelContext().GetValue("high_score_points", m_high_score_points);
     GetPanelContext().GetValue("bullet_fire_rate", m_fire_rate);
-    GetPanelContext().GetValue("bullet_speed", m_bullet_speed);
+    GetPanelContext().GetValue("critical_chance", m_crit_chance);
+    GetPanelContext().GetValue("critical_damage", m_crit_dmg);
     GetPanelContext().GetValue("bullet_damage", m_bullet_damage);
     GetPanelContext().GetValue("ultimate_cooldown", m_ultimate_cooldown);
 }

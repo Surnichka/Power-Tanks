@@ -28,10 +28,11 @@ private:
         None = 0, Left = 1, Right = 2, Up = 4, Down = 8,
     };
 
-    float speed = 4.0f;
+    float speed = 5.5f;
 
     Gun gun;
     Ball player;
+    bool lifeSteal = false;
     LevelCounter lvlCount;
     int m_highScorePoints = 0;
 

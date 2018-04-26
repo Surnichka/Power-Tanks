@@ -26,29 +26,35 @@ void Gun::Init()
 
     connectSignals();
 
-    GetPanelContext().AddValue("bullet_fire_rate", bullet_fire_rate);
-    GetPanelContext().AddValue("bullet_speed", bullet_speed);
     GetPanelContext().AddValue("bullet_damage", bullet_damage);
+    GetPanelContext().AddValue("critical_damage", crit_damage);
+    GetPanelContext().AddValue("critical_chance", critical_chance);
+    GetPanelContext().AddValue("bullet_fire_rate", bullet_fire_rate);
 }
+
 
 void Gun::connectSignals()
 {
-    GetBinder().ConnectSlot(Signal::Bullet::Damage, [this](float value)
+    GetBinder().ConnectSlot(Signal::Bullet::Damage, [this](float dmg, float criticalDmg)
     {
-        bullet_damage += value;
+        bullet_damage += dmg;
+        crit_damage += criticalDmg;
         GetPanelContext().AddValue("bullet_damage", bullet_damage);
+        GetPanelContext().AddValue("critical_damage", crit_damage);
     });
 
-    GetBinder().ConnectSlot(Signal::Bullet::Speed, [this](float value)
+    GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](float fireRate, float bulletSpeed)
     {
-        bullet_speed += value;
-        GetPanelContext().AddValue("bullet_speed", bullet_speed);
-    });
-
-    GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](float value)
-    {
-        bullet_fire_rate += value;
+        bullet_speed += bulletSpeed;
+        bullet_fire_rate = std::max(100.0f, bullet_fire_rate + fireRate);
         GetPanelContext().AddValue("bullet_fire_rate", bullet_fire_rate);
+    });
+
+    GetBinder().ConnectSlot(Signal::Bullet::Critical, [this](float criticalChance, float ultimateCD)
+    {
+        critical_chance += criticalChance;
+        ultimate_cooldown += ultimateCD;
+        GetPanelContext().AddValue("critical_chance", critical_chance);
     });
 }
 

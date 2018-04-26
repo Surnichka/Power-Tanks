@@ -28,9 +28,10 @@ public:
     void OnCollideOtherBall(OnCollisionFunc onColFunc);
     void OnWallCollide(OnWallHitFunc onWallHitFunc);
 
-    void SetMaxHealth(int health);
+    void SetMaxHealth(float health);
+    void lifeSteal(float health);
 
-    int GetCurrentHealth();
+    float GetCurrentHealth();
     glm::vec2 getCurrentPosition();
 public:
     size_t m_id = 0;
@@ -41,8 +42,8 @@ public:
 
     float m_mass;
     float m_radius;
-    int m_maxHealth = 1;
-    int m_currentHealth = 1;
+    float m_maxHealth = 1.0f;
+    float m_currentHealth = 1.0f;
     bool m_enteringScreen = true;
 
     sf::CircleShape m_circle;
