@@ -15,5 +15,5 @@ public:
     virtual void Draw(sf::RenderWindow& window) = 0;
     virtual void Show() = 0;
     virtual void Hide() = 0;
-    virtual void OnEvent(sf::Event) {}
+    virtual void OnEvent(const sf::Event&) {}
 };

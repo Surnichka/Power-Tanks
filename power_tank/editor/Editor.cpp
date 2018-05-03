@@ -8,8 +8,8 @@ void ImGui::Editor::Proccess()
 //    ImGui::Begin("Editor", nullptr);
 
 //    ImGui::End();
-//    bool demo = true;
-//    ImGui::ShowDemoWindow(&demo);
+    bool demo = true;
+    ImGui::ShowDemoWindow(&demo);
 
 //    ImGui::Begin("Debug Menu");
 //    if(ImGui::Button("AddSpeed"))

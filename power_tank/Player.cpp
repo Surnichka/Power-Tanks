@@ -6,6 +6,7 @@
 #include "SignalDefinitions.h"
 #include "utils/ResourceMgr.h"
 #include "PanelContext.h"
+#include "SharedContext.h"
 
 void Player::Init()
 {
@@ -33,7 +34,7 @@ void Player::Init()
         other.Destroy();
 
         self.TakeLife(1);
-        GetPanelContext().AddValue("health", self.GetCurrentHealth());
+        refreshContext();
 
         if( false == self.IsAlive() )
         {
@@ -46,9 +47,7 @@ void Player::Init()
     playerCenter.y = centerPos.y + radius;
 
     connectSignals();
-
-    GetPanelContext().AddValue("move_speed", speed);
-    GetPanelContext().AddValue("health", player.GetCurrentHealth());
+    refreshContext();
 }
 
 void Player::Update(float dt)
@@ -72,7 +71,6 @@ void Player::Draw(sf::RenderWindow &window)
 {
     player.Draw(window);
     gun.Draw(window);
-    lvlCount.Draw(window);
 }
 
 glm::vec2 Player::Move()
@@ -101,21 +99,26 @@ void Player::connectSignals()
     GetBinder().ConnectSlot("player_shoot_supernova", [this](){ gun.Ultimate(); });
     GetBinder().ConnectSlot(Signal::Enemy::Died, [this]()
     {
-        lvlCount.GainExp();
-        GetPanelContext().AddValue("health", player.GetCurrentHealth());
-        GetPanelContext().AddValue("high_score_points", ++m_highScorePoints);
-        if(lifeSteal)
-            player.lifeSteal(0.1f);
+        m_highScorePoints++;
+        refreshContext();
+        player.AddLife(lifeStealAmount);
     });
     GetBinder().ConnectSlot(Signal::Player::MoveSpeed, [this](float value)
     {
         speed += value;
-        GetPanelContext().AddValue("move_speed", speed);
+        refreshContext();
     });
-    GetBinder().ConnectSlot("life_steal", [this](bool life)
+    GetBinder().ConnectSlot(Signal::Bullet::LifeSteal, [this](float lifesteal)
     {
-        lifeSteal = life;
+        lifeStealAmount += lifesteal;
     });
+}
+
+void Player::refreshContext()
+{
+    GetSharedContext().Add(Property::Health, player.GetCurrentHealth());
+    GetSharedContext().Add(Property::MovementSpeed, speed);
+    GetSharedContext().Add(Property::Highscore, m_highScorePoints);
 }
 
 bool Player::IsInvulnarable()

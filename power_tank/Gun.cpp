@@ -6,6 +6,7 @@
 #include "libs/Binder/Binder.h"
 #include "SFML/Window/Mouse.hpp"
 #include "PanelContext.h"
+#include "SharedContext.h"
 #include <random>
 
 namespace
@@ -25,11 +26,7 @@ void Gun::Init()
     barrel.setOutlineColor(sf::Color::Black);
 
     connectSignals();
-
-    GetPanelContext().AddValue("bullet_damage", bullet_damage);
-    GetPanelContext().AddValue("critical_damage", crit_damage);
-    GetPanelContext().AddValue("critical_chance", critical_chance);
-    GetPanelContext().AddValue("bullet_fire_rate", bullet_fire_rate);
+    refreshContext();
 }
 
 
@@ -39,22 +36,21 @@ void Gun::connectSignals()
     {
         bullet_damage += dmg;
         crit_damage += criticalDmg;
-        GetPanelContext().AddValue("bullet_damage", bullet_damage);
-        GetPanelContext().AddValue("critical_damage", crit_damage);
+        refreshContext();
     });
 
     GetBinder().ConnectSlot(Signal::Bullet::FireRate, [this](float fireRate, float bulletSpeed)
     {
         bullet_speed += bulletSpeed;
         bullet_fire_rate = std::max(100.0f, bullet_fire_rate + fireRate);
-        GetPanelContext().AddValue("bullet_fire_rate", bullet_fire_rate);
+        refreshContext();
     });
 
     GetBinder().ConnectSlot(Signal::Bullet::Critical, [this](float criticalChance, float ultimateCD)
     {
         critical_chance += criticalChance;
         ultimate_cooldown += ultimateCD;
-        GetPanelContext().AddValue("critical_chance", critical_chance);
+        refreshContext();
     });
 }
 
@@ -131,7 +127,7 @@ void Gun::Update(float dt)
     last_ultimate += dt;
 
     float cooldown = std::max(0.0f, (ultimate_cooldown - last_ultimate));
-    GetPanelContext().AddValue("ultimate_cooldown", int(std::ceil((cooldown) / 1000.0f)));
+    GetSharedContext().Add(Property::UltimateCooldown, int(std::ceil((cooldown) / 1000.0f)));
 
     for (auto& bullet : bullets)
     {
@@ -172,6 +168,14 @@ void Gun::LookAtMousePos()
 std::vector<Ball> &Gun::GetBullets()
 {
     return bullets;
+}
+
+void Gun::refreshContext()
+{
+    GetSharedContext().Add(Property::BulletDamage, bullet_damage);
+    GetSharedContext().Add(Property::BulletFireRate, bullet_fire_rate);
+    GetSharedContext().Add(Property::CriticalChance, critical_chance);
+    GetSharedContext().Add(Property::CriticalDamage, crit_damage);
 }
 
 //void Gun::DebugMenu()

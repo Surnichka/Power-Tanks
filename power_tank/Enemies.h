@@ -24,9 +24,9 @@ private:
     EnemyGotHit m_enemyGotHit;
 
     int health = 1;
-    int max_enemies_in_screen = 5;
+    int max_enemies_in_screen = 10;
     float spawn_elapsed = 0.0f;
-    float spawn_rate = 3000.0f;
+    float spawn_rate = 300.0f;
     float chance_to_split = 0.0f;
     float chase_player = 30.0f;
 

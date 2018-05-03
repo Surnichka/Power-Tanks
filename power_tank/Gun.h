@@ -13,6 +13,7 @@ public:
     void setBarrelPositions(glm::vec2 pos);
     std::vector<Ball>& GetBullets();
 private:
+    void refreshContext();
     void connectSignals();
     void Shoot(glm::vec2 destPos);
     void LookAtMousePos();
@@ -21,13 +22,13 @@ private:
     float bullet_radius = 4.0f;
 
     float bullet_speed = 7.0f;
-    float bullet_fire_rate = 600.0f;
+    float bullet_fire_rate = 700.0f;
     float critical_chance = 10.0f;
     float crit_damage = 2.1f;
 
     float last_shoot = 0.0f;
     float ultimate_cooldown = 30000.0f;
-//    float ultimate_cooldown = 1000.0f;
+//    float ultimate_cooldown = 100.0f;
     float last_ultimate = ultimate_cooldown;
 
     sf::Vector2i mousePos;

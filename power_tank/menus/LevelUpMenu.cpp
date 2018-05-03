@@ -4,14 +4,13 @@
 #include "../SignalDefinitions.h"
 #include "../utils/ResourceMgr.h"
 #include "../libs/Binder/Binder.h"
+#include "../SharedContext.h"
 #include "../PanelContext.h"
 #include <iostream>
 
 void LevelUpMenu::Init()
 {
     auto& resMgr = ResoruceMgr::Get();
-    resMgr.InitLevelUpResources();
-
     levelPointsTxt.setString("LEVEL POINTS: " + std::to_string(levelPoints));
     levelPointsTxt.setPosition({600,500});
     setText(levelPointsTxt, sf::Color::Black, {1.0f,1.0f});
@@ -64,9 +63,8 @@ void LevelUpMenu::Init()
         xPos += 400;
     }
     setShape();
-
-    GetPanelContext().AddValue("level_points", levelPoints);
     connectSignals();
+    refreshContext();
 
     InitTestSkills();
 }
@@ -106,6 +104,11 @@ void LevelUpMenu::connectSignals()
         GetPanelContext().AddValue("level_points", levelPoints);
         levelPointsTxt.setString("LEVEL POINTS: " + std::to_string(levelPoints));
     });
+}
+
+void LevelUpMenu::refreshContext()
+{
+    GetSharedContext().Add(Property::AbilityPoint, levelPoints);
 }
 
 void LevelUpMenu::HandlEvent(sf::Event event)
@@ -158,31 +161,38 @@ void LevelUpMenu::HandlEvent(sf::Event event)
     HandleTestEvent(event);
 }
 
+
+void LevelUpMenu::HandleAllEvent(int levelPoints)
+{
+    // check for level points if they are more return
+
+    // check if mouse is in global bounds in order to change the color and draw the info
+
+    // chech if mouse is clicked in the global bounds in order to do
+
+    //if mouse is on top of element, highlight it, only if it is enabled etc...
+
+}
+
 void LevelUpMenu::HandleTestEvent(sf::Event event)
 {
 
     if ( levelPoints < 3)
     {
         testSkill.shape.setFillColor(sf::Color::Red);
-        if (testSkill.shape.getGlobalBounds().contains(mouse.x, mouse.y))
-        {
-            testSkill.drawSkillReq = true;
-        }
+        testSkill.drawSkillReq = testSkill.shape.getGlobalBounds().contains(mouse.x, mouse.y); // false
         return ;
     }
 
-    testSkill.sprite.setScale(1.0f, 1.0f);
     if (testSkill.shape.getGlobalBounds().contains(mouse.x, mouse.y))
     {
         testSkill.shape.setFillColor(sf::Color::Green);
         testSkill.drawSkillInfo = true;
-        testSkill.drawSkillReq = false;
     }
     else
     {
         testSkill.shape.setFillColor({170,170,170});
         testSkill.drawSkillInfo = false;
-        testSkill.drawSkillReq = false;
     }
 
     if (testSkill.shape.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
@@ -207,11 +217,10 @@ void LevelUpMenu::HandleTestEvent(sf::Event event)
     }
 
     testSkill.shape.setScale(1.0f,1.0f);
-    testSkill.drawSkillInfo = false;
-    testSkill.drawSkillReq = false;
 
     if ( levelPoints < 3)
     {
+        testSkill.drawSkillInfo = false;
         testSkill.shape.setFillColor(sf::Color::Red);
     }
 }
@@ -234,6 +243,7 @@ void LevelUpMenu::RefreshColors()
         box.shape.setFillColor(defaultColor);
     }
 }
+
 
 void LevelUpMenu::setShape()
 {

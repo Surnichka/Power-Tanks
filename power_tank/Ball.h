@@ -29,7 +29,7 @@ public:
     void OnWallCollide(OnWallHitFunc onWallHitFunc);
 
     void SetMaxHealth(float health);
-    void lifeSteal(float health);
+    void AddLife(float health);
 
     float GetCurrentHealth();
     glm::vec2 getCurrentPosition();

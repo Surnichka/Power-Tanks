@@ -1,7 +1,7 @@
 #include "LevelCounter.h"
 #include "FontMgr.h"
 #include "../Window.h"
-#include "../PanelContext.h"
+#include "../SharedContext.h"
 #include "../SignalDefinitions.h"
 #include "../libs/Binder/Binder.h"
 #include "../libs/Timer.h"
@@ -21,6 +21,7 @@ LevelCounter::LevelCounter()
 
     box.setSize({200, 20});
     box.setPosition(Window::width / 2 + 50 ,Window::height - 60);
+    GetSharedContext().Add(Property::PlayerLevel, currentLevel);
 }
 
 void LevelCounter::Enable()
@@ -41,7 +42,10 @@ void LevelCounter::GainExp()
     if( exp >= expirienceRequirements.at(currentLevel) )
     {
         currentLevel++;
+        GetSharedContext().Add(Property::PlayerLevel, currentLevel);
+
         GetBinder().DispatchSignal(Signal::Player::LevelUp, currentLevel);
+        GetBinder().DispatchSignal(Signal::Ability::AddPoint, currentLevel);
         expirienceGained.at(currentLevel)++;
     }
 }
@@ -73,8 +77,7 @@ void LevelCounter::Draw(sf::RenderWindow &window)
     window.draw(txtLvl);
 
     //2. Draw available points
-    int levelPoints = 0;
-    GetPanelContext().GetValue("level_points", levelPoints );
+    int levelPoints = GetSharedContext().Get(Property::AbilityPoint);
 
     static float elapsedForLevelPoints = 0.0f;
 

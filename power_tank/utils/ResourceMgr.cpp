@@ -33,3 +33,9 @@ sf::Sprite &ResoruceMgr::GetSprite(const std::string &name)
     auto& sprite = pictures.at(name).sprite;
     return sprite;
 }
+
+sf::Texture &ResoruceMgr::GetTexture(const std::string &name)
+{
+    auto& texture = pictures.at(name).texture;
+    return texture;
+}

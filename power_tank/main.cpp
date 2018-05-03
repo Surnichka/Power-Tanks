@@ -10,11 +10,15 @@
 #include "editor/Editor.h"
 #include "SignalDefinitions.h"
 #include "libs/Timer.h"
+#include "utils/ResourceMgr.h"
 
 int main()
 {
+    ResoruceMgr::Get().InitLevelUpResources();
+
     GameApp gameApp;
     gameApp.Init();
+
 
     sf::RenderWindow window(sf::VideoMode(Window::width, Window::height), "PowerTank");
     window.setFramerateLimit(60);
@@ -62,7 +66,7 @@ int main()
         gameApp.Draw(window);
         GetDebugMenu().Draw(window);
 
-//        ImGui::Editor::Proccess();
+        ImGui::Editor::Proccess();
         ImGui::SFML::Render(window);
         window.display();
     }

@@ -5,6 +5,7 @@
 #include "../boid_manager/SteeringManager.h"
 #include "../boid_manager/CollisionManager.h"
 #include "../particles/ParticleSystem.h"
+#include "../utils/ProgressBar.h"
 class TestView : public IView
 {
 public:
@@ -16,4 +17,9 @@ public:
     void Hide() final override;
 private:
     ParticleSystem m_particleSystem;
+    ProgressBar bar1;
+    ProgressBar bar2;
+    ProgressBar bar3;
+    ProgressBar bar4;
 };
+

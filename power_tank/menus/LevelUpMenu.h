@@ -35,16 +35,19 @@ public:
     void Draw(sf::RenderWindow& window);
     void RefreshColors();
 
+    void HandleAllEvent(int levelPoints);
+
 private:
     void drawInfoForSkills(sf::RenderWindow& window);
     void connectSignals();
+    void refreshContext();
     void setShape();
     void setText(sf::Text& text,
                  const sf::Color& color = sf::Color::Black,
                  const sf::Vector2f& scale = {0.7f,0.7f} );
 private:
     sf::Vector2i mouse;
-    int levelPoints = 1;
+    int levelPoints = 5;
     sf::Text levelPointsTxt;
     std::vector<PassiveSkillStruct> skillsContainer;
 

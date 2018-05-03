@@ -152,14 +152,9 @@ void Ball::SetMaxHealth(float health)
     m_currentHealth = health;
 }
 
-void Ball::lifeSteal(float health)
+void Ball::AddLife(float health)
 {
-    if (m_currentHealth >= 10.0f)
-    {
-        return;
-    }
-
-    m_currentHealth += health;
+    m_currentHealth = std::min(10.0f, m_currentHealth + health);
 }
 
 float Ball::GetCurrentHealth()

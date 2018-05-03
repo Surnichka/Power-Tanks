@@ -88,7 +88,7 @@ void PowerTankView::Hide()
 
 }
 
-void PowerTankView::OnEvent(sf::Event event)
+void PowerTankView::OnEvent(const sf::Event& event)
 {
     if( event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
     {

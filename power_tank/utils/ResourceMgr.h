@@ -10,6 +10,7 @@ public:
     void InitLevelUpResources();
 
     sf::Sprite& GetSprite(const std::string& name);
+    sf::Texture& GetTexture(const std::string& name);
 private:
     struct Picture
     {

@@ -23,23 +23,24 @@ void Enemies::Init()
         health += 1;
         if( currentLevel == 3 )
         {
-            chase_player--;
             chance_to_split = 25.0f;
         }
         if ( currentLevel == 5)
         {
+            max_enemies_in_screen += 1;
             health += 1;
-            chase_player--;
             chance_to_split = 50.0f;
         }
         if ( currentLevel == 8)
         {
+            max_enemies_in_screen += 1;
             health += 1;
             chase_player--;
             chance_to_split = 75.0f;
         }
         if ( currentLevel == 10)
         {
+            max_enemies_in_screen += 2;
             health += 1;
             chase_player--;
             chance_to_split = 100.0f;

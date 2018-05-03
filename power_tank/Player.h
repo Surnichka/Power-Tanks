@@ -4,7 +4,6 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "Ball.h"
 #include "Gun.h"
-#include "utils/LevelCounter.h"
 #include "PlayerKillSound.h"
 
 class Player
@@ -19,6 +18,7 @@ public:
     Ball& GetPlayer();
 private:
     void connectSignals();
+    void refreshContext();
     bool IsInvulnarable();
     void InputEvents();
     glm::vec2 Move();
@@ -32,8 +32,8 @@ private:
 
     Gun gun;
     Ball player;
-    bool lifeSteal = false;
-    LevelCounter lvlCount;
+    float lifeStealAmount = 0.0f;
+
     int m_highScorePoints = 0;
 
     int direction = Direction::None;
